@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raider Teclado &mdash; Spanish keyboard typing practice</title>
+<meta name="description" content="Learn to type Spanish accents, ñ, ¿ and ¡ on a US keyboard using the Windows Spanish (Latin America) layout. Drills, a timed sprint game, and a paste-in class leaderboard. Free, runs entirely in your browser.">
+<script>
+/* Light/dark follows the operating system setting. No in-page toggle by design. */
+(function(){
+  var mq = window.matchMedia("(prefers-color-scheme: dark)");
+  function apply(){ document.documentElement.setAttribute("data-theme", mq.matches ? "dark" : "light"); }
+  apply();
+  if (mq.addEventListener) mq.addEventListener("change", apply);
+  else if (mq.addListener) mq.addListener(apply);
+})();
+</script>
+<style>
+:root{
+  --red:#C11430;
+  --bg:#f6f6f7; --panel:#ffffff; --ink:#1b1c1f; --muted:#5d6068;
+  --line:rgba(128,128,128,.28); --soft:rgba(128,128,128,.07);
+  --key:#ffffff; --keyline:rgba(128,128,128,.40); --keyink:#1b1c1f;
+  --good:#1a7f45; --goodbg:rgba(26,127,69,.12);
+  --bad:#c0261c;  --badbg:rgba(192,38,28,.13);
+  --warn:#8a5a00; --warnbg:rgba(196,140,0,.14);
+  --gold:#a8791a;
+}
+:root[data-theme="dark"]{
+  --bg:#15161a; --panel:#1d1f24; --ink:#e9eaee; --muted:#a0a4ae;
+  --line:rgba(150,150,160,.26); --soft:rgba(160,160,175,.07);
+  --key:#24272e; --keyline:rgba(150,150,160,.34); --keyink:#e9eaee;
+  --good:#5ed693; --goodbg:rgba(94,214,147,.14);
+  --bad:#ff7d72;  --badbg:rgba(255,125,114,.15);
+  --warn:#f0c04a; --warnbg:rgba(240,192,74,.14);
+  --gold:#e8b84b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  line-height:1.5;-webkit-font-smoothing:antialiased;
+}
+.ctr{max-width:1000px;margin:0 auto;padding:0 20px}
+.site-header{display:flex;align-items:center;gap:14px;padding:22px 0 16px;flex-wrap:wrap}
+.rj-mark{height:40px;width:auto;display:block;flex-shrink:0}
+.site-header h1{font-size:1.32rem;margin:0;font-weight:700;letter-spacing:-.01em}
+.site-header .sub{font-size:.84rem;color:var(--muted);margin-top:2px}
+.hdr-txt{flex:1;min-width:210px}
+.who{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted)}
+.who input{font:inherit;font-size:.86rem;padding:6px 9px;border:1px solid var(--line);border-radius:7px;
+  background:var(--panel);color:var(--ink);width:170px}
+
+/* tabs */
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tab{
+  border:none;background:none;padding:10px 14px;font-size:.88rem;font-weight:650;color:var(--muted);
+  cursor:pointer;border-bottom:2px solid transparent;border-radius:0;margin-bottom:-1px
+}
+.tab:hover{color:var(--ink);border-color:var(--line)}
+.tab[aria-selected="true"]{color:var(--red);border-bottom-color:var(--red)}
+.view{display:none}
+.view.on{display:block}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin:18px 0}
+h2{font-size:1.02rem;margin:0 0 10px;font-weight:700}
+h3{font-size:.72rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--red);margin:0 0 10px}
+p{margin:0 0 10px}
+.muted{color:var(--muted)} .small{font-size:.86rem} .tiny{font-size:.78rem}
+kbd{display:inline-block;font-family:"Segoe UI",system-ui,sans-serif;font-size:.8rem;font-weight:650;
+  padding:1px 7px;border:1px solid var(--keyline);border-bottom-width:2px;border-radius:5px;
+  background:var(--key);color:var(--keyink);white-space:nowrap;line-height:1.5}
+button{font:inherit;font-weight:600;font-size:.88rem;padding:9px 15px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:border-color .15s,background .15s}
+button:hover{border-color:var(--red)}
+button.primary{background:var(--red);border-color:var(--red);color:#fff}
+button.primary:hover{filter:brightness(1.08)}
+button:disabled{opacity:.45;cursor:default} button:disabled:hover{border-color:var(--line)}
+.row{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
+select{font:inherit;font-size:.86rem;padding:7px 9px;border-radius:8px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink)}
+
+/* layout check */
+#layoutCheck .box{border:1px solid var(--line);border-radius:10px;padding:16px;background:var(--soft);
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.verdict{padding:12px 14px;border-radius:9px;margin-top:12px;font-size:.9rem;display:none}
+.verdict.ok{display:block;background:var(--goodbg);border:1px solid var(--good)}
+.verdict.no{display:block;background:var(--warnbg);border:1px solid var(--warn)}
+.probe{font:inherit;font-size:1.5rem;text-align:center;width:90px;padding:8px;border-radius:9px;
+  border:2px solid var(--keyline);background:var(--panel);color:var(--ink)}
+
+/* levels */
+.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.lvl{text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:var(--soft);
+  cursor:pointer;display:block;width:100%;font-weight:500}
+.lvl:hover{border-color:var(--red)}
+.lvl.active{border-color:var(--red);background:rgba(193,20,48,.10)}
+.lvl .lt{font-weight:650;font-size:.94rem;display:flex;align-items:center;gap:7px}
+.lvl .ld{font-size:.79rem;opacity:.72;margin-top:4px;line-height:1.4;font-weight:400}
+.star{color:var(--good);font-weight:700;margin-left:auto;font-size:.78rem;white-space:nowrap}
+
+/* drill surface */
+.prompt{font-size:.82rem;color:var(--muted);margin-bottom:8px;min-height:1.2em}
+.target{font-family:"Cascadia Mono","Consolas","SF Mono",ui-monospace,monospace;
+  font-size:1.6rem;line-height:1.75;word-break:break-word;padding:16px;border-radius:10px;
+  background:var(--soft);border:1px solid var(--line);min-height:78px}
+.target .ch{border-radius:3px;padding:1px 0}
+.target .ch.done{color:var(--good);background:var(--goodbg)}
+.target .ch.err{color:var(--bad);background:var(--badbg);text-decoration:underline wavy}
+.target .ch.cur{background:var(--red);color:#fff}
+#capture{position:absolute;left:-9999px;top:0;opacity:0;width:10px;height:10px}
+.stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:.84rem}
+.stat b{display:block;font-size:1.25rem;font-weight:700;line-height:1.2}
+.bar{height:6px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:12px;border:1px solid var(--line)}
+.bar > i{display:block;height:100%;background:var(--red);width:0;transition:width .18s}
+
+/* sprint */
+.sprintbar{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.clock{font-size:2.5rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.clock.low{color:var(--bad)}
+.score{font-size:1.9rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:var(--red)}
+.combo{font-size:.95rem;font-weight:700;color:var(--gold);min-width:104px}
+.combo.hidden{visibility:hidden}
+.pop{position:relative}
+.float{position:absolute;right:0;top:-4px;font-weight:800;color:var(--good);font-size:.95rem;
+  opacity:0;transform:translateY(0);pointer-events:none}
+.float.go{animation:fl .75s ease-out}
+@keyframes fl{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-24px)}}
+.result{text-align:center;padding:12px 0}
+.result .big{font-size:3rem;font-weight:800;line-height:1.1;color:var(--red)}
+.result .sub{font-size:1rem;color:var(--muted)}
+.pbtag{display:inline-block;background:var(--goodbg);border:1px solid var(--good);border-radius:99px;
+  padding:3px 12px;font-size:.8rem;font-weight:700;margin-top:8px}
+
+/* badges */
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:9px;margin-top:6px}
+.badge{border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:var(--soft);opacity:.42}
+.badge.got{opacity:1;border-color:var(--gold);background:rgba(168,121,26,.10)}
+.badge .bn{font-weight:700;font-size:.88rem}
+.badge .bd{font-size:.76rem;opacity:.75;line-height:1.35;margin-top:2px}
+
+/* how-to + keyboard */
+.howto{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:12px;font-size:.85rem;min-height:30px}
+.step{display:inline-flex;align-items:center;gap:5px}
+.plus{opacity:.5;font-weight:700}
+.then{opacity:.55;font-size:.78rem;font-style:italic;margin:0 2px}
+.kbwrap{margin-top:16px;overflow-x:auto;padding-bottom:4px}
+.kb{display:inline-block;min-width:660px;width:100%}
+.krow{display:flex;gap:5px;margin-bottom:5px}
+.k{position:relative;flex:1 1 0;min-width:0;height:48px;border:1px solid var(--keyline);border-bottom-width:2px;
+  border-radius:7px;background:var(--key);color:var(--keyink);display:flex;align-items:center;justify-content:center;
+  font-size:1rem;font-weight:600;user-select:none}
+.k .us{position:absolute;top:2px;left:5px;font-size:.58rem;font-weight:600;opacity:.42}
+.k .sh{position:absolute;top:2px;right:5px;font-size:.62rem;font-weight:700;opacity:.55}
+.k .main{margin-top:6px}
+.k.wide{flex:1.6 1 0} .k.wider{flex:2.1 1 0} .k.space{flex:7 1 0}
+.k.mod{font-size:.68rem;font-weight:650;opacity:.72}
+.k.hot{background:var(--red);border-color:var(--red);color:#fff}
+.k.hot .us,.k.hot .sh{opacity:.85;color:#fff}
+.k.hot2{background:rgba(193,20,48,.18);border-color:var(--red)}
+.k.dead{outline:2px dashed var(--warn);outline-offset:-3px}
+.legend{font-size:.76rem;color:var(--muted);margin-top:10px;display:flex;gap:16px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.swatch{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid var(--keyline)}
+
+/* tables */
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line)}
+th{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);font-weight:700}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.chip{display:inline-block;padding:2px 8px;border-radius:99px;border:1px solid var(--line);font-size:.78rem;margin:2px 3px 2px 0}
+.chip.weak{border-color:var(--bad);color:var(--bad)}
+textarea{width:100%;font:inherit;font-size:.88rem;padding:10px;border-radius:9px;border:1px solid var(--line);
+  background:var(--bg);color:var(--ink);min-height:110px;resize:vertical}
+.code{font-family:"Cascadia Mono",Consolas,ui-monospace,monospace;font-size:.95rem;letter-spacing:.03em;
+  padding:9px 12px;border:1px dashed var(--line);border-radius:8px;display:block;background:var(--soft);
+  word-break:break-all;margin:8px 0}
+details{border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin:10px 0;background:var(--soft)}
+summary{cursor:pointer;font-weight:650;font-size:.9rem}
+details[open] summary{margin-bottom:8px}
+.big-screen table{font-size:1.25rem}
+.big-screen th{font-size:.9rem}
+.rank1{color:var(--gold);font-weight:800}
+footer{border-top:1px solid var(--line);margin-top:34px;padding:18px 0 8px;font-size:.8rem;color:var(--muted);text-align:center}
+footer a{color:inherit}
+@media (max-width:640px){ .target{font-size:1.25rem} .site-header h1{font-size:1.1rem} .clock{font-size:2rem} }
+@media print{ body{background:#fff} .noprint{display:none!important} .panel{border:none;padding:0} .tabs{display:none} .view{display:block!important} }
+</style>
+</head>
+<body>
+<div class="ctr">
+
+  <header class="site-header">
+    <img class="rj-mark" src="data:image/png;base64,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" alt="Regis Jesuit">
+    <div class="hdr-txt">
+      <h1>Raider Teclado</h1>
+      <div class="sub">Type Spanish on a US keyboard &mdash; Windows <strong>Spanish (Latin America)</strong> layout</div>
+    </div>
+    <label class="who noprint">Name
+      <input id="student" type="text" placeholder="Your name" autocomplete="name" spellcheck="false">
+    </label>
+  </header>
+
+  <div class="tabs noprint" role="tablist">
+    <button class="tab" id="t-practice"  role="tab" aria-selected="true"  data-v="practice">Practice</button>
+    <button class="tab" id="t-sprint"    role="tab" aria-selected="false" data-v="sprint">Sprint</button>
+    <button class="tab" id="t-progress"  role="tab" aria-selected="false" data-v="progress">My progress</button>
+    <button class="tab" id="t-board"     role="tab" aria-selected="false" data-v="board">Class leaderboard</button>
+    <button class="tab" id="t-cheat"     role="tab" aria-selected="false" data-v="cheat">Shortcut sheet</button>
+  </div>
+
+  <!-- =================== PRACTICE =================== -->
+  <div class="view on" id="v-practice">
+
+    <section class="panel noprint" id="layoutCheck">
+      <h3>First &middot; check your keyboard</h3>
+      <p class="small">Your keys are printed in English, but Windows can send Spanish characters instead.
+      Switch with <kbd>Windows</kbd> <span class="plus">+</span> <kbd>Space</kbd> &mdash; the box by the clock should read <strong>ESP</strong>.</p>
+      <div class="box">
+        <div class="small"><strong>Test it:</strong> click the box and press the key just right of <kbd>L</kbd>.</div>
+        <input class="probe" id="probe" maxlength="1" spellcheck="false" autocomplete="off" aria-label="Keyboard layout test">
+        <button id="probeAgain" type="button">Clear</button>
+      </div>
+      <div class="verdict" id="verdict"></div>
+    </section>
+
+    <section class="panel noprint">
+      <h3>Choose a drill</h3>
+      <div class="levels" id="levels"></div>
+      <details>
+        <summary>Teacher: load your own word or sentence list</summary>
+        <p class="tiny muted">One word or sentence per line. It stays in this browser &mdash; nothing is uploaded.
+        Paste this week&rsquo;s vocabulary and it becomes a drill called &ldquo;Class list,&rdquo; usable in Sprint too.</p>
+        <textarea id="customIn" placeholder="la canción&#10;el pingüino&#10;¿Cómo se llama tu compañero?&#10;Mañana es el cumpleaños de mi mamá."></textarea>
+        <div class="row" style="margin-top:9px">
+          <button id="saveCustom" class="primary" type="button">Save class list</button>
+          <button id="clearCustom" type="button">Remove</button>
+          <span class="tiny muted" id="customNote"></span>
+        </div>
+      </details>
+    </section>
+
+    <section class="panel" id="drillPanel">
+      <div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div>
+          <h2 id="drillTitle">Pick a drill to begin</h2>
+          <div class="prompt" id="drillPrompt">Everything runs in this browser. Nothing you type is sent anywhere.</div>
+        </div>
+        <div class="row noprint">
+          <button id="restartBtn" type="button">Restart</button>
+          <button id="skipBtn" type="button">Skip line</button>
+        </div>
+      </div>
+
+      <div class="target" id="target" tabindex="0" role="textbox" aria-label="Typing target">
+        <span class="muted" style="font-size:1rem">Choose a drill above, then start typing.</span>
+      </div>
+      <input id="capture" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
+      <div class="bar"><i id="bar"></i></div>
+
+      <div class="stats">
+        <div class="stat"><b id="sWpm">&mdash;</b><span class="muted">words / min</span></div>
+        <div class="stat"><b id="sCpm">&mdash;</b><span class="muted">letters / min</span></div>
+        <div class="stat"><b id="sAcc">&mdash;</b><span class="muted">accuracy</span></div>
+        <div class="stat"><b id="sLine">0 / 0</b><span class="muted">lines</span></div>
+        <div class="stat"><b id="sErr">0</b><span class="muted">mistakes</span></div>
+      </div>
+
+      <div class="howto" id="howto"></div>
+
+      <div class="kbwrap noprint"><div class="kb" id="kb"></div></div>
+      <div class="legend noprint">
+        <span><i class="swatch" style="background:var(--red);border-color:var(--red)"></i> press this now</span>
+        <span><i class="swatch" style="background:rgba(193,20,48,.18);border-color:var(--red)"></i> hold this</span>
+        <span><i class="swatch" style="outline:2px dashed var(--warn);outline-offset:-3px"></i> accent key &mdash; nothing appears until the next key</span>
+        <span>small grey letter = what is printed on your keycap</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- =================== SPRINT =================== -->
+  <div class="view" id="v-sprint">
+    <section class="panel">
+      <h3>Sprint &middot; beat your own best</h3>
+      <div class="row" style="margin-bottom:14px">
+        <label class="small muted">Length
+          <select id="sprintLen">
+            <option value="30">30 seconds</option>
+            <option value="60" selected>60 seconds</option>
+            <option value="120">2 minutes</option>
+          </select>
+        </label>
+        <label class="small muted">Words from
+          <select id="sprintPool">
+            <option value="mix">Everything (accents, ñ, ¿ ¡)</option>
+            <option value="accent">Accented words only</option>
+            <option value="enye">ñ words only</option>
+            <option value="sent">Full sentences</option>
+            <option value="custom">Class list</option>
+          </select>
+        </label>
+        <button id="sprintGo" class="primary" type="button">Start sprint</button>
+      </div>
+
+      <div class="sprintbar">
+        <div><div class="clock" id="clock">60</div><span class="muted tiny">seconds left</span></div>
+        <div class="pop"><div class="score" id="score">0</div><span class="muted tiny">points</span>
+          <span class="float" id="float"></span></div>
+        <div class="combo hidden" id="combo">&times;1.0 &nbsp;streak 0</div>
+      </div>
+
+      <div class="target" id="sTarget" tabindex="0" role="textbox" aria-label="Sprint target">
+        <span class="muted" style="font-size:1rem">Press <strong>Start sprint</strong>. The clock begins on your first keystroke.</span>
+      </div>
+      <input id="sCapture" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
+
+      <div class="stats">
+        <div class="stat"><b id="spWpm">&mdash;</b><span class="muted">words / min</span></div>
+        <div class="stat"><b id="spCpm">&mdash;</b><span class="muted">letters / min</span></div>
+        <div class="stat"><b id="spAcc">&mdash;</b><span class="muted">accuracy</span></div>
+        <div class="stat"><b id="spAcc2">&mdash;</b><span class="muted">accented chars typed</span></div>
+      </div>
+
+      <div id="sprintResult"></div>
+      <p class="tiny muted" style="margin-top:14px">Points reward the characters this class is actually about:
+      an ordinary letter is 10, an accented letter, <strong>ñ</strong>, <strong>¿</strong> or <strong>¡</strong> is 25.
+      A clean streak raises the multiplier; a mistake resets it.</p>
+    </section>
+
+    <section class="panel">
+      <h3>Badges</h3>
+      <div class="badges" id="badges"></div>
+    </section>
+  </div>
+
+  <!-- =================== PROGRESS =================== -->
+  <div class="view" id="v-progress">
+    <section class="panel">
+      <h3>My progress</h3>
+      <div id="progressBody"></div>
+      <div class="row noprint" style="margin-top:16px">
+        <button id="btnReport" class="primary" type="button">Download report for my teacher</button>
+        <button id="btnPrint" type="button">Print / Save as PDF</button>
+        <button id="btnCopy" type="button">Copy summary text</button>
+        <button id="btnReset" type="button">Erase my progress</button>
+      </div>
+      <p class="tiny muted" style="margin-top:10px">The report is one file you can attach to a Canvas assignment.
+      It carries a check code your teacher can paste into the Class leaderboard tab to confirm nothing was edited by hand.</p>
+    </section>
+
+    <section class="panel noprint">
+      <h3>My score code</h3>
+      <p class="small">For a leaderboard, send your teacher this one line &mdash; in Canvas, Teams chat, or on paper.
+      It contains your name and your numbers, nothing else.</p>
+      <div class="code" id="myCode">Type your name above and finish a sprint first.</div>
+      <div class="row">
+        <button id="btnCode" class="primary" type="button">Copy my score code</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- =================== LEADERBOARD =================== -->
+  <div class="view" id="v-board">
+    <section class="panel">
+      <h3>Class leaderboard &middot; for the teacher</h3>
+      <p class="small">There is no server and no sign-in, so scores do not gather themselves.
+      Have students paste their <strong>score code</strong> into a Canvas assignment or a Teams message,
+      then paste the whole pile in here. One code per line; extra text around them is ignored.</p>
+      <textarea id="boardIn" style="min-height:130px" placeholder="RT1~Ana Ruiz~0918~42~214~97~1580~K3D9F2&#10;RT1~Marco Díaz~0918~38~191~99~1490~P8X1B7"></textarea>
+      <div class="row" style="margin-top:10px">
+        <button id="boardGo" class="primary" type="button">Build leaderboard</button>
+        <label class="small muted">Rank by
+          <select id="boardSort">
+            <option value="points">Points</option>
+            <option value="wpm">Words per minute</option>
+            <option value="cpm">Letters per minute</option>
+            <option value="acc">Accuracy</option>
+          </select>
+        </label>
+        <button id="boardBig" type="button">Big screen</button>
+        <button id="boardCsv" type="button">Download CSV</button>
+      </div>
+      <div id="boardOut" style="margin-top:16px"></div>
+      <p class="tiny muted" id="boardNote" style="margin-top:10px"></p>
+    </section>
+
+    <section class="panel noprint">
+      <h3>A note on ranking a class</h3>
+      <p class="small">Typing speed is a motor skill with an objective number, which is the one place a board like this
+      is fairly safe &mdash; but a permanent public ranking is still the version of gamification with the weakest
+      evidence behind it. Two ways to use this that keep the fun without the floor falling out for the slowest typist:
+      run it as a <strong>single-round arcade score</strong> that resets each time, or rank by
+      <strong>gain over a student&rsquo;s own first score</strong> rather than raw speed. Every student&rsquo;s
+      personal best is already tracked privately on their own machine, with no ranking at all.</p>
+    </section>
+  </div>
+
+  <!-- =================== CHEAT SHEET =================== -->
+  <div class="view" id="v-cheat">
+    <section class="panel">
+      <h3>Shortcut sheet &middot; Spanish (Latin America) on a US keyboard</h3>
+      <p class="small muted">The same shortcuts as the sheet your teacher hands out, plus the few it leaves off.</p>
+      <table>
+        <thead><tr><th>You want</th><th>Press</th><th>Note</th></tr></thead>
+        <tbody id="cheat"></tbody>
+      </table>
+    </section>
+    <section class="panel">
+      <h3>Turning the layout on</h3>
+      <p class="small"><strong>Switch between English and Spanish:</strong> <kbd>Windows</kbd> + <kbd>Space</kbd>.
+      The indicator by the clock flips between <strong>ENG</strong> and <strong>ESP</strong>.</p>
+      <p class="small"><strong>If ESP is not offered:</strong> Settings &rarr; Time &amp; language &rarr;
+      Language &amp; region &rarr; Spanish &rarr; &hellip; &rarr; Language options &rarr; Add a keyboard &rarr;
+      <strong>Latin American</strong>. (On a school laptop this is allowed &mdash; it adds a keyboard, not a display language.)</p>
+      <p class="small"><strong>The accent key does nothing at first &mdash; that is correct.</strong>
+      <kbd>[</kbd> sends <kbd>&acute;</kbd> and waits. The accent appears when you press the vowel.
+      To type a bare <kbd>&acute;</kbd>, press <kbd>[</kbd> then <kbd>Space</kbd>.</p>
+    </section>
+  </div>
+
+  <footer class="noprint">
+    No data leaves your browser &middot;
+    <a href="https://github.com/RJEdTech/Raider-Teclado">View on GitHub</a> &middot;
+    <a href="https://forms.microsoft.com/r/sKU9sHY45r">Report a bug or request a tool</a>
+  </footer>
+</div>
+
+<!--RJTOOLS-->
+<section class="rj-tools" aria-label="More RJ Ed Tech tools">
+<style>
+.rj-tools{max-width:1000px;margin:52px auto 0;padding:30px 20px 44px;border-top:1px solid rgba(128,128,128,.28);font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;box-sizing:border-box;}
+.rj-tools *{box-sizing:border-box;}
+.rj-tools h2{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C11430;margin:0 0 16px;}
+.rj-tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:10px;}
+.rj-tool{display:block;padding:13px 15px;border:1px solid rgba(128,128,128,.28);border-radius:8px;text-decoration:none;color:inherit;background:rgba(128,128,128,.05);transition:border-color .15s,transform .15s;}
+.rj-tool:hover{border-color:#C11430;transform:translateY(-1px);}
+.rj-tool .rj-t{font-weight:650;font-size:.95rem;display:flex;align-items:center;gap:6px;color:inherit;line-height:1.25;}
+.rj-tool .rj-arrow{color:#C11430;transition:transform .15s;font-weight:700;}
+.rj-tool:hover .rj-arrow{transform:translateX(3px);}
+.rj-tool .rj-d{font-size:.8rem;line-height:1.42;margin-top:5px;opacity:.72;}
+.rj-tool.is-here{border-color:#C11430;background:rgba(193,20,48,.10);cursor:default;}
+.rj-tool.is-here:hover{transform:none;}
+.rj-here{margin-left:auto;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#C11430;border:1px solid #C11430;border-radius:99px;padding:2px 8px;white-space:nowrap;}
+.rj-tools-foot{margin-top:18px;font-size:.72rem;opacity:.55;}
+</style>
+  <h2>More RJ Ed Tech tools</h2>
+  <div class="rj-tools-grid">
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Quiz-Builder/"><div class="rj-t">Raider Quiz Builder <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Build, expand, and convert Canvas quizzes from plain text.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Randomizer/"><div class="rj-t">Raider Randomizer <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Fair student picking, grouping, and seating shuffles.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Timer/"><div class="rj-t">Raider Timer <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Countdown, stopwatch, and station rotation for class.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Pods/"><div class="rj-t">Raider Pod Generator <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Mixed teams of four, seated so partners can actually help each other.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Roster-Hub/"><div class="rj-t">Raider Roster Hub <span class="rj-arrow">&rarr;</span></div><div class="rj-d">One class list for all your RJ tools, and ZipGrade without student names.</div></a>
+    <div class="rj-tool is-here"><div class="rj-t">Raider Teclado<span class="rj-here">You&rsquo;re here</span></div><div class="rj-d">Type Spanish accents, ñ, ¿ and ¡ on a US keyboard.</div></div>
+    <a class="rj-tool" href="https://rjedtech.github.io/MyRJScheduleCleaner/"><div class="rj-t">MyRJ Schedule Cleaner <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Import your MyRJ schedule into Outlook without looking busy all day.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/cooperative-learning-toolkit/"><div class="rj-t">Cooperative Learning Toolkit <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Every Kagan structure, method, and source in one place.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Observation-Digest/"><div class="rj-t">Raider Observation Digest <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Your observation report, cut down to what was actually scored and written.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Observation-Console/"><div class="rj-t">Raider Observation Console <span class="rj-arrow">&rarr;</span></div><div class="rj-d">For chairs: the observation form showing only the elements you came to watch.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/EdTech-Status/"><div class="rj-t">EdTech Status <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Live status of Regis Jesuit's ed-tech systems.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Incoming-Raider-FAQ/"><div class="rj-t">Incoming Raider FAQ <span class="rj-arrow">&rarr;</span></div><div class="rj-d">A searchable guide for new and incoming Regis Jesuit students.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/New-Ignatian-Educator-FAQ/"><div class="rj-t">New Ignatian Educator FAQ <span class="rj-arrow">&rarr;</span></div><div class="rj-d">A searchable onboarding guide for teachers new to Ignatian education.</div></a>
+  </div>
+  <div class="rj-tools-foot">Regis Jesuit &middot; Educational Technology &mdash; free classroom tools that run in your browser</div>
+</section>
+<!--/RJTOOLS-->
+
+<script>
+/* ==========================================================================
+   Raider Teclado  ·  Regis Jesuit Educational Technology
+   Windows "Spanish (Latin America)" layout (kbdla) mapped onto US ANSI keys.
+   No network calls. localStorage only.
+   ========================================================================== */
+(function(){
+"use strict";
+
+/* ---------- 1. LAYOUT ----------------------------------------------------
+   [event.code, printed US legend, unshifted, shifted, altgr, flags]        */
+var ROWS = [
+  [
+    ["Backquote","`","|","°","¬"],
+    ["Digit1","1","1","!"], ["Digit2","2","2","\""], ["Digit3","3","3","#"],
+    ["Digit4","4","4","$"], ["Digit5","5","5","%"],  ["Digit6","6","6","&"],
+    ["Digit7","7","7","/"], ["Digit8","8","8","("],  ["Digit9","9","9",")"],
+    ["Digit0","0","0","="],
+    ["Minus","-","'","?","\\"],
+    ["Equal","=","¿","¡"],
+    ["Backspace","","← Bksp","","","wider mod"]
+  ],
+  [
+    ["Tab","","Tab","","","wide mod"],
+    ["KeyQ","Q","q","Q","@"], ["KeyW","W","w","W"], ["KeyE","E","e","E"],
+    ["KeyR","R","r","R"], ["KeyT","T","t","T"], ["KeyY","Y","y","Y"],
+    ["KeyU","U","u","U"], ["KeyI","I","i","I"], ["KeyO","O","o","O"], ["KeyP","P","p","P"],
+    ["BracketLeft","[","´","¨","^","dead"],
+    ["BracketRight","]","+","*","~"],
+    ["Backslash","\\","}","]"]
+  ],
+  [
+    ["CapsLock","","Caps","","","wide mod"],
+    ["KeyA","A","a","A"], ["KeyS","S","s","S"], ["KeyD","D","d","D"],
+    ["KeyF","F","f","F"], ["KeyG","G","g","G"], ["KeyH","H","h","H"],
+    ["KeyJ","J","j","J"], ["KeyK","K","k","K"], ["KeyL","L","l","L"],
+    ["Semicolon",";","ñ","Ñ"],
+    ["Quote","'","{","["],
+    ["Enter","","Enter","","","wider mod"]
+  ],
+  [
+    ["ShiftLeft","","Shift","","","wider mod"],
+    ["KeyZ","Z","z","Z"], ["KeyX","X","x","X"], ["KeyC","C","c","C"],
+    ["KeyV","V","v","V"], ["KeyB","B","b","B"], ["KeyN","N","n","N"], ["KeyM","M","m","M"],
+    ["Comma",",",",",";"], ["Period",".",".",":"], ["Slash","/","-","_"],
+    ["ShiftRight","","Shift","","","wider mod"]
+  ],
+  [
+    ["ControlLeft","","Ctrl","","","wide mod"],
+    ["MetaLeft","","Win","","","wide mod"],
+    ["AltLeft","","Alt","","","wide mod"],
+    ["Space","","space","","","space mod"],
+    ["AltRight","","Alt Gr","","","wide mod"],
+    ["ControlRight","","Ctrl","","","wide mod"]
+  ]
+];
+var ACUTE = {a:"á",e:"é",i:"í",o:"ó",u:"ú",
+             A:"Á",E:"É",I:"Í",O:"Ó",U:"Ú"};
+var DIAER = {a:"ä",e:"ë",i:"ï",o:"ö",u:"ü",
+             A:"Ä",E:"Ë",I:"Ï",O:"Ö",U:"Ü"};
+var SPECIAL = "áéíóúüñ¿¡" +
+              "ÁÉÍÓÚÜÑ";
+
+var HOW = {};
+(function buildHow(){
+  ROWS.forEach(function(row){ row.forEach(function(k){
+    var code=k[0], base=k[2], shift=k[3], alt=k[4], flags=k[5]||"";
+    if(code==="Space"){ HOW[" "]=[{code:"Space",label:"space"}]; return; }
+    if(flags.indexOf("mod")>-1 || flags.indexOf("dead")>-1) return;
+    if(base && base.length===1 && !(base in HOW)) HOW[base]=[{code:code,label:base}];
+    if(shift && shift.length===1 && !(shift in HOW)) HOW[shift]=[{code:code,label:shift,shift:true}];
+    if(alt && alt.length===1 && !(alt in HOW)) HOW[alt]=[{code:code,label:alt,alt:true}];
+  });});
+  Object.keys(ACUTE).forEach(function(b){
+    HOW[ACUTE[b]] = [{code:"BracketLeft",label:"´",dead:true},
+                     {code:"Key"+b.toUpperCase(),label:b,shift:(b===b.toUpperCase())}];
+  });
+  Object.keys(DIAER).forEach(function(b){
+    HOW[DIAER[b]] = [{code:"BracketLeft",label:"¨",shift:true,dead:true},
+                     {code:"Key"+b.toUpperCase(),label:b,shift:(b===b.toUpperCase())}];
+  });
+  for(var i=65;i<=90;i++){ var ch=String.fromCharCode(i); HOW[ch]=[{code:"Key"+ch,label:ch,shift:true}]; }
+  HOW["Ñ"]=[{code:"Semicolon",label:"Ñ",shift:true}];
+})();
+
+/* ---------- 2. CONTENT ---------------------------------------------------- */
+var ENYE  = ["año","niño","uña","leña","caña","seña","mañana","señor",
+  "señora","pequeño","compañero","España","español","otoño","cumpleaños",
+  "enseñar","montaña","baño","sueño","dueño","niña","araña"];
+var ACCW = ["mamá","papá","café","bebé","sí","aquí","día","música",
+  "lápiz","árbol","fácil","difícil","canción","televisión","lección",
+  "atención","también","después","adiós","jardín","número","médico",
+  "pájaro","sábado","miércoles","teléfono","camión","jamón","ratón",
+  "corazón","periódico","matemáticas","rápido","último","inglés","mazán",
+  "pingüino","vergüenza","bilingüe","antigüedad"];
+var SENT = [
+  "Mi compañero de clase se llama Joaquín Fernández.",
+  "¿Cuál es tu comida favorita? La mía es el maíz.",
+  "¡Qué lástima! El examen de español es mañana.",
+  "El pingüino pequeño camina después de la lección.",
+  "Los jóvenes estudian geografía, música e inglés.",
+  "¿Por qué no vamos al café de la esquina el miércoles?",
+  "¿Cómo se llama la capital de Chile? Se llama Santiago.",
+  "La cordillera de los Andes divide el país en dos.",
+  "¡Feliz cumpleaños! ¿Cuántos años cumples?",
+  "El desierto de Atacama es el más seco del mundo."
+];
+ACCW = ACCW.filter(function(w){ return w!=="mazán"; });
+
+var LEVELS = [
+  { id:"l1", name:"1 · The ñ key", tag:"Right of L",
+    prompt:"ñ is a key of its own — the one printed ; on your keyboard. No accent key needed.",
+    lines:["ñ ñ ñ ñ ñ ñ ñ ñ",
+           "año niño uña leña seña caña",
+           "mañana señor pequeño compañero",
+           "España otoño cumpleaños enseñar",
+           "El niño pequeño cumple años mañana."] },
+  { id:"l2", name:"2 · The accent key", tag:"á é í ó ú",
+    prompt:"Press ´ (the key printed [ ). Nothing appears. Then press the vowel.",
+    lines:["á é í ó ú á é í ó ú",
+           "mamá papá café bebé sí aquí",
+           "día música lápiz árbol fácil",
+           "canción televisión lección atención",
+           "Mi mamá toma café y escucha música."] },
+  { id:"l3", name:"3 · ¿ and ¡", tag:"Openers",
+    prompt:"¿ sits on the key printed = . Hold Shift on that same key for ¡.",
+    lines:["¿ ¡ ¿ ¡ ¿ ¡ ¿ ¡",
+           "¿Qué? ¿Quién? ¿Dónde? ¿Cuándo? ¿Por qué?",
+           "¡Hola! ¡Claro! ¡Qué bien! ¡Buen viaje!",
+           "¿Cómo te llamas? ¿De dónde eres?",
+           "¡Qué sorpresa! ¿Cuántos años tienes?"] },
+  { id:"l4", name:"4 · The ü", tag:"Diaeresis",
+    prompt:"Shift + the ´ key gives ¨. Nothing appears — then press u.",
+    lines:["ü ü ü ü ü ü",
+           "pingüino vergüenza bilingüe",
+           "lingüística antigüedad averigüe",
+           "El pingüino bilingüe no siente vergüenza."] },
+  { id:"l5", name:"5 · Moved punctuation", tag:"' ? : ; @",
+    prompt:"The Spanish layout moves these. The apostrophe and ? share the key printed - .",
+    lines:["' ? ' ? , ; . : - _",
+           "¿Qué pasa? No sé. ¡Vamos!",
+           "María: ¿vienes? Juan: sí, claro.",
+           "el señor, la señora; los niños, las niñas",
+           "¿Qué día es hoy? Hoy es miércoles."] },
+  { id:"l6", name:"6 · Full sentences", tag:"Everything",
+    prompt:"All of it together, at the pace of real writing.", lines:SENT.slice(0,6) },
+  { id:"l7", name:"7 · Accent practice", tag:"Where does it go?",
+    prompt:"The word appears without its accents. Type it correctly — you decide where the tilde belongs.",
+    accent:true, lines:ACCW.slice() }
+];
+
+var CHEAT = [
+  ["ñ / Ñ","the key printed <kbd>;</kbd> (Shift for Ñ)","Its own key. No accent needed."],
+  ["á é í ó ú","<kbd>[</kbd> then the vowel","<kbd>[</kbd> sends ´. Nothing shows until you press the vowel."],
+  ["Á É Í Ó Ú","<kbd>[</kbd> then Shift + vowel",""],
+  ["ü","Shift + <kbd>[</kbd> then <kbd>U</kbd>","Shift + <kbd>[</kbd> sends ¨."],
+  ["´ by itself","<kbd>[</kbd> then <kbd>Space</kbd>","How you escape the accent key."],
+  ["¿","the key printed <kbd>=</kbd>",""],
+  ["¡","Shift + the key printed <kbd>=</kbd>","Not on the class sheet — same key as ¿."],
+  ["@","<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>Q</kbd>","Or <kbd>Alt Gr</kbd> + <kbd>Q</kbd> — same thing."],
+  ["!","Shift + <kbd>1</kbd>",""],
+  ["\"","Shift + <kbd>2</kbd>","Not on the class sheet."],
+  ["#","Shift + <kbd>3</kbd>",""],
+  ["$","Shift + <kbd>4</kbd>",""],
+  ["%","Shift + <kbd>5</kbd>",""],
+  ["&amp;","Shift + <kbd>6</kbd>",""],
+  ["/","Shift + <kbd>7</kbd>",""],
+  ["(","Shift + <kbd>8</kbd>",""],
+  [")","Shift + <kbd>9</kbd>",""],
+  ["=","Shift + <kbd>0</kbd>",""],
+  ["?","Shift + the key printed <kbd>-</kbd>","Moved. It is no longer beside the right Shift."],
+  ["'","the key printed <kbd>-</kbd>",""],
+  [";","Shift + <kbd>,</kbd>",""],
+  [":","Shift + <kbd>.</kbd>",""],
+  ["-","the key printed <kbd>/</kbd>",""],
+  ["Switch layouts","<kbd>Windows</kbd> + <kbd>Space</kbd>","Watch for ESP / ENG by the clock."]
+];
+
+var BADGES = [
+  {id:"first", n:"Primer paso",   d:"Finish any drill.",                     t:function(s){ return countBest(s)>=1; }},
+  {id:"enye",  n:"Mañoso",   d:"Type 100 ñ without a miss.",        t:function(s){ return (s.cleanChars["ñ"]||0)>=100; }},
+  {id:"acc",   n:"Acentuado",     d:"Type 250 accented vowels.",              t:function(s){ return accentTotal(s)>=250; }},
+  {id:"perf",  n:"Sin errores",   d:"Finish a drill at 100% accuracy.",       t:function(s){ return s.perfectDrills>=1; }},
+  {id:"w25",   n:"25 wpm",        d:"Hit 25 words per minute in a sprint.",   t:function(s){ return (s.sprintBest.wpm||0)>=25; }},
+  {id:"w40",   n:"40 wpm",        d:"Hit 40 words per minute in a sprint.",   t:function(s){ return (s.sprintBest.wpm||0)>=40; }},
+  {id:"c200",  n:"200 lpm",       d:"Hit 200 letters per minute in a sprint.",t:function(s){ return (s.sprintBest.cpm||0)>=200; }},
+  {id:"combo", n:"Racha de 50",   d:"Reach a 50-character clean streak.",     t:function(s){ return (s.bestStreak||0)>=50; }},
+  {id:"all",   n:"Todo el teclado",d:"Finish all seven drills.",              t:function(s){ return countBest(s)>=7; }},
+  {id:"k2000", n:"2.000 puntos",  d:"Score 2,000 points in one sprint.",      t:function(s){ return (s.sprintBest.points||0)>=2000; }}
+];
+function countBest(s){ var n=0; LEVELS.forEach(function(l){ if(s.best[l.id]) n++; }); return n; }
+function accentTotal(s){
+  var n=0, k="áéíóúü";
+  for(var i=0;i<k.length;i++) n += (s.cleanChars[k[i]]||0);
+  return n;
+}
+
+/* ---------- 3. STATE ------------------------------------------------------ */
+var LS = "rjteclado_v1";
+var state = {
+  name:"", best:{}, sprintBest:{}, weak:{}, cleanChars:{},
+  totalMs:0, sessions:0, perfectDrills:0, bestStreak:0, custom:null,
+  firstUse:null, firstSprint:null, badges:{}
+};
+function load(){
+  try{ var raw=localStorage.getItem(LS);
+    if(raw){ var o=JSON.parse(raw); for(var k in o) if(o.hasOwnProperty(k)) state[k]=o[k]; } }catch(e){}
+  if(!state.firstUse) state.firstUse = today();
+  if(!state.sprintBest) state.sprintBest = {};
+  if(!state.cleanChars) state.cleanChars = {};
+  if(!state.badges) state.badges = {};
+}
+function save(){ try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){} }
+var saveTimer=null;
+function scheduleSave(){ if(saveTimer) return;
+  saveTimer = setTimeout(function(){ saveTimer=null; save(); }, 1500); }
+function today(){ var d=new Date(); return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function mmdd(){ var d=new Date(); return pad(d.getMonth()+1)+pad(d.getDate()); }
+function pad(n){ return (n<10?"0":"")+n; }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+function flashNote(msg){
+  var el = document.getElementById("flashNote");
+  if(!el){ el=document.createElement("div"); el.id="flashNote";
+    el.style.cssText="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:50;"
+      + "background:var(--panel);border:1px solid var(--red);color:var(--ink);padding:9px 16px;"
+      + "border-radius:9px;font-size:.86rem;font-weight:600;box-shadow:0 4px 18px rgba(0,0,0,.18)";
+    document.body.appendChild(el); }
+  el.textContent = msg; el.style.display="block";
+  clearTimeout(el.__t); el.__t = setTimeout(function(){ el.style.display="none"; }, 2200);
+}
+function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+function stripAccents(s){ return s.replace(/[áéíóúü]/g,function(c){
+  return {"á":"a","é":"e","í":"i","ó":"o","ú":"u","ü":"u"}[c]; }); }
+
+/* ---------- 4. KEYBOARD --------------------------------------------------- */
+var kbEl, keyEls = {};
+function renderKb(){
+  var html="";
+  ROWS.forEach(function(row){
+    html += '<div class="krow">';
+    row.forEach(function(k){
+      var code=k[0], us=k[1], base=k[2], shift=k[3], flags=k[5]||"";
+      var cls="k";
+      if(flags.indexOf("wider")>-1) cls+=" wider"; else if(flags.indexOf("wide")>-1) cls+=" wide";
+      if(flags.indexOf("space")>-1) cls+=" space";
+      if(flags.indexOf("mod")>-1) cls+=" mod";
+      var inner="";
+      if(flags.indexOf("mod")>-1){ inner = esc(base); }
+      else {
+        if(us) inner += '<span class="us">'+esc(us)+'</span>';
+        if(shift && shift!==base.toUpperCase()) inner += '<span class="sh">'+esc(shift)+'</span>';
+        inner += '<span class="main">'+esc(base)+'</span>';
+      }
+      html += '<div class="'+cls+'" data-code="'+code+'">'+inner+'</div>';
+    });
+    html += '</div>';
+  });
+  kbEl.innerHTML = html;
+  Array.prototype.forEach.call(kbEl.querySelectorAll(".k"), function(el){
+    keyEls[el.getAttribute("data-code")] = el; });
+}
+function clearKb(){ for(var c in keyEls) if(keyEls.hasOwnProperty(c)){
+  keyEls[c].className = keyEls[c].className.replace(/\s*(hot2|hot|dead)\b/g,""); } }
+function highlight(ch, stepIndex){
+  clearKb();
+  var howEl = document.getElementById("howto");
+  var steps = HOW[ch];
+  if(!steps){ howEl.innerHTML=""; return; }
+  var step = steps[stepIndex] || steps[0];
+  var el = keyEls[step.code];
+  if(el){ el.className += " hot"; if(step.dead) el.className += " dead"; }
+  if(step.shift){ if(keyEls.ShiftLeft) keyEls.ShiftLeft.className+=" hot2";
+                  if(keyEls.ShiftRight) keyEls.ShiftRight.className+=" hot2"; }
+  if(step.alt && keyEls.AltRight) keyEls.AltRight.className += " hot2";
+  var parts = steps.map(function(s,i){
+    var bits=[];
+    if(s.shift) bits.push("<kbd>Shift</kbd>");
+    if(s.alt)   bits.push("<kbd>Alt Gr</kbd>");
+    bits.push("<kbd>"+esc(s.label==="space"?"Space":s.label)+"</kbd>");
+    return '<span class="step"'+(i===stepIndex?' style="font-weight:700"':'')+'>'
+         + bits.join(' <span class="plus">+</span> ') + '</span>';
+  });
+  var joined = parts.join(' <span class="then">then</span> ');
+  if(steps.length>1 && stepIndex===0)
+    joined += ' <span class="then">&mdash; nothing appears after the first key, that is correct</span>';
+  howEl.innerHTML = '<span class="muted tiny">Next:</span> ' + joined;
+}
+
+/* ---------- 5. SHARED TYPING CORE ----------------------------------------- */
+function makeEngine(opts){
+  var eng = {
+    target:"", typed:"", seen:0, el:opts.el, cap:opts.cap,
+    onChar:opts.onChar, onDone:opts.onDone, onPaste:opts.onPaste, accentMode:false, deadPending:false
+  };
+  eng.setTarget = function(t, accentMode){
+    eng.target=t; eng.typed=""; eng.seen=0; eng.accentMode=!!accentMode;
+    eng.cap.value=""; eng.render();
+  };
+  eng.focus = function(){ try{ eng.cap.focus({preventScroll:true}); }catch(e){ eng.cap.focus(); } };
+  eng.render = function(){
+    var t=eng.target, typed=eng.typed, html="";
+    for(var i=0;i<t.length;i++){
+      var cls="ch";
+      if(i<typed.length) cls += (typed[i]===t[i]) ? " done" : " err";
+      else if(i===typed.length) cls += " cur";
+      var shown = (eng.accentMode && i>=typed.length) ? stripAccents(t[i]) : t[i];
+      html += '<span class="'+cls+'">'+esc(shown===" " ? " " : shown)+'</span>';
+    }
+    for(var j=t.length;j<typed.length;j++) html += '<span class="ch err">'+esc(typed[j])+'</span>';
+    eng.el.innerHTML = html;
+    if(opts.showKeys){
+      var next = t[typed.length];
+      if(next !== undefined){
+        var steps = HOW[next];
+        highlight(next, (steps && steps.length>1 && eng.deadPending) ? 1 : 0);
+      } else { clearKb(); document.getElementById("howto").innerHTML=""; }
+    }
+    if(opts.bar){
+      var pct = t.length ? Math.min(100, Math.round(typed.length/t.length*100)) : 0;
+      document.getElementById(opts.bar).style.width = pct+"%";
+    }
+  };
+  eng.cap.addEventListener("keydown", function(e){
+    if(e.key === "Dead"){ eng.deadPending = true; setTimeout(eng.render,0); }
+    else if(e.key.length===1 || e.key==="Backspace"){ eng.deadPending = false; }
+    if(e.key==="Tab") e.preventDefault();
+  });
+  eng.cap.addEventListener("paste", function(e){ e.preventDefault(); });
+  eng.cap.addEventListener("drop",  function(e){ e.preventDefault(); });
+  eng.cap.addEventListener("input", function(){
+    var v = eng.cap.value; eng.deadPending = false;
+    if(!eng.target) return;
+    // A dead key plus its letter is 2 characters. More than that at once is pasted text, not typing.
+    if(v.length - eng.seen > 2){
+      eng.cap.value = eng.typed; eng.render();
+      if(typeof eng.onPaste === "function") eng.onPaste();
+      return;
+    }
+    if(v.length > eng.seen){
+      for(var i=eng.seen;i<v.length;i++) eng.onChar(v[i], eng.target[i], i);
+    }
+    eng.seen = v.length; eng.typed = v; eng.render();
+    if(v === eng.target) eng.onDone();
+  });
+  eng.el.addEventListener("click", eng.focus);
+  return eng;
+}
+
+/* ---------- 6. PRACTICE MODE ---------------------------------------------- */
+var pr = { level:null, lines:[], idx:0, started:0, chars:0, errs:0, lineClean:true, drillClean:true };
+var pEng;
+function startLevel(id){
+  var lvl=null;
+  LEVELS.forEach(function(l){ if(l.id===id) lvl=l; });
+  if(id==="custom" && state.custom && state.custom.length)
+    lvl = {id:"custom", name:"Class list", tag:"From your teacher",
+           prompt:"Your teacher's list. Same keys, your own vocabulary.", lines:state.custom.slice()};
+  if(!lvl) return;
+  pr.level=lvl; pr.lines=lvl.lines.slice();
+  if(lvl.accent){ shuffle(pr.lines); pr.lines=pr.lines.slice(0,12); }
+  pr.idx=0; pr.started=0; pr.chars=0; pr.errs=0; pr.drillClean=true;
+  document.getElementById("drillTitle").textContent = lvl.name.replace(/^\d+\s*·\s*/,"");
+  document.getElementById("drillPrompt").textContent = lvl.prompt;
+  markActive(id);
+  loadLine();
+  document.getElementById("drillPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function loadLine(){
+  if(pr.idx >= pr.lines.length){ finishLevel(); return; }
+  pr.lineClean = true;
+  pEng.setTarget(pr.lines[pr.idx], !!(pr.level && pr.level.accent));
+  pEng.focus();
+  updatePracticeStats();
+}
+function updatePracticeStats(){
+  var mins = pr.started ? (Date.now()-pr.started)/60000 : 0;
+  var ready = mins>0 && pr.chars>=10;
+  var wpm = ready ? Math.round((pr.chars/5)/mins) : 0;
+  var cpm = ready ? Math.round(pr.chars/mins) : 0;
+  var tot = pr.chars + pr.errs;
+  document.getElementById("sWpm").textContent = wpm>0 ? wpm : "—";
+  document.getElementById("sCpm").textContent = cpm>0 ? cpm : "—";
+  document.getElementById("sAcc").textContent = tot ? Math.round(pr.chars/tot*100)+"%" : "—";
+  document.getElementById("sLine").textContent = (Math.min(pr.idx+1,pr.lines.length))+" / "+pr.lines.length;
+  document.getElementById("sErr").textContent = pr.errs;
+}
+function finishLevel(){
+  var lvl=pr.level;
+  var mins = pr.started ? (Date.now()-pr.started)/60000 : 0;
+  var ready = mins>0 && pr.chars>=10;
+  var wpm = ready ? Math.round((pr.chars/5)/mins) : 0;
+  var cpm = ready ? Math.round(pr.chars/mins) : 0;
+  var tot = pr.chars+pr.errs, acc = tot ? Math.round(pr.chars/tot*100) : 0;
+  var prev = state.best[lvl.id];
+  if(!prev || wpm>prev.wpm || (wpm===prev.wpm && acc>prev.acc))
+    state.best[lvl.id] = {wpm:wpm, cpm:cpm, acc:acc, date:today(), name:lvl.name};
+  else state.best[lvl.id].date = today();
+  if(acc===100 && pr.chars>20) state.perfectDrills++;
+  state.totalMs += Math.round(mins*60000); state.sessions++;
+  save();
+  document.getElementById("target").innerHTML =
+      '<div style="font-size:1rem;line-height:1.6"><strong style="font-size:1.15rem">Drill complete.</strong><br>'
+    + esc(lvl.name.replace(/^\d+\s*·\s*/,"")) + ' — <strong>'+wpm+' wpm</strong> ('+cpm+' letters/min), '
+    + '<strong>'+acc+'%</strong> accuracy, '+pr.errs+' mistake'+(pr.errs===1?"":"s")+'.'
+    + (prev ? '<br><span class="muted small">Previous best: '+prev.wpm+' wpm at '+prev.acc+'%.</span>' : '')
+    + '</div>';
+  clearKb(); document.getElementById("howto").innerHTML="";
+  document.getElementById("bar").style.width="100%";
+  pEng.target="";
+  renderLevels(); renderProgress(); renderBadges(); markActive(null);
+}
+
+/* ---------- 7. SPRINT MODE ------------------------------------------------- */
+var sp = { on:false, endsAt:0, tick:null, chars:0, errs:0, special:0, points:0,
+           streak:0, bestStreak:0, pool:[], pi:0, started:0, len:60 };
+var sEng;
+function poolFor(kind){
+  if(kind==="enye")   return shuffle(ENYE.slice());
+  if(kind==="accent") return shuffle(ACCW.slice());
+  if(kind==="sent")   return shuffle(SENT.slice());
+  if(kind==="custom" && state.custom && state.custom.length) return shuffle(state.custom.slice());
+  return shuffle(ENYE.concat(ACCW).concat(["¿qué?","¡hola!","¿dónde?","¡claro!",
+    "¿por qué?","¿cuándo?","¡vamos!","¿quién?"]));
+}
+function sprintLine(){
+  if(sp.kind==="sent" || sp.kind==="custom"){
+    if(sp.pi>=sp.pool.length) sp.pi=0;
+    return sp.pool[sp.pi++];
+  }
+  var w=[];
+  for(var i=0;i<6;i++){ if(sp.pi>=sp.pool.length){ shuffle(sp.pool); sp.pi=0; } w.push(sp.pool[sp.pi++]); }
+  return w.join(" ");
+}
+function startSprint(){
+  sp.len = parseInt(document.getElementById("sprintLen").value,10);
+  sp.kind = document.getElementById("sprintPool").value;
+  if(sp.kind==="custom" && !(state.custom && state.custom.length)){
+    alert("No class list saved yet. Add one under Practice → Teacher: load your own word list.");
+    return;
+  }
+  sp.pool = poolFor(sp.kind); sp.pi = 0;
+  sp.on=true; sp.chars=0; sp.errs=0; sp.special=0; sp.points=0; sp.streak=0; sp.bestStreak=0;
+  sp.started=0; sp.endsAt=0;
+  document.getElementById("sprintResult").innerHTML="";
+  document.getElementById("clock").textContent = sp.len;
+  document.getElementById("clock").className = "clock";
+  document.getElementById("score").textContent = "0";
+  document.getElementById("combo").className = "combo hidden";
+  sEng.setTarget(sprintLine(), false);
+  sEng.focus();
+  updateSprintStats();
+}
+function sprintTick(){
+  if(!sp.on || !sp.started) return;
+  var left = Math.max(0, Math.ceil((sp.endsAt - Date.now())/1000));
+  var c = document.getElementById("clock");
+  c.textContent = left;
+  c.className = "clock" + (left<=10 ? " low" : "");
+  updateSprintStats();
+  if(left<=0) endSprint();
+}
+function multiplier(){ return Math.min(2, 1 + Math.floor(sp.streak/20)*0.1); }
+function updateSprintStats(){
+  var mins = sp.started ? (Date.now()-sp.started)/60000 : 0;
+  var ready = mins>0 && sp.chars>=10;
+  var wpm = ready ? Math.round((sp.chars/5)/mins) : 0;
+  var cpm = ready ? Math.round(sp.chars/mins) : 0;
+  var tot = sp.chars+sp.errs;
+  document.getElementById("spWpm").textContent = wpm>0?wpm:"—";
+  document.getElementById("spCpm").textContent = cpm>0?cpm:"—";
+  document.getElementById("spAcc").textContent = tot?Math.round(sp.chars/tot*100)+"%":"—";
+  document.getElementById("spAcc2").textContent = sp.special;
+  document.getElementById("score").textContent = sp.points.toLocaleString();
+  var cm = document.getElementById("combo");
+  if(sp.streak>=10){ cm.className="combo"; cm.textContent = "×"+multiplier().toFixed(1)+"  streak "+sp.streak; }
+  else cm.className="combo hidden";
+}
+function floatPts(n){
+  var f=document.getElementById("float");
+  f.textContent = "+"+n; f.className="float";
+  void f.offsetWidth; f.className="float go";
+}
+function endSprint(){
+  if(!sp.on) return;
+  sp.on=false;
+  if(sp.tick){ clearInterval(sp.tick); sp.tick=null; }
+  var mins = sp.len/60;
+  var wpm = Math.round((sp.chars/5)/mins);
+  var cpm = Math.round(sp.chars/mins);
+  var tot = sp.chars+sp.errs, acc = tot?Math.round(sp.chars/tot*100):0;
+  var b = state.sprintBest || {};
+  var isPB = !b.points || sp.points > b.points;
+  if(!state.firstSprint) state.firstSprint = {wpm:wpm, cpm:cpm, points:sp.points, date:today()};
+  if(isPB) state.sprintBest = {wpm:wpm, cpm:cpm, acc:acc, points:sp.points, date:today(), len:sp.len};
+  else {
+    state.sprintBest.wpm = Math.max(b.wpm||0, wpm);
+    state.sprintBest.cpm = Math.max(b.cpm||0, cpm);
+    state.sprintBest.acc = Math.max(b.acc||0, acc);
+    state.sprintBest.date = today();
+  }
+  if(sp.bestStreak > (state.bestStreak||0)) state.bestStreak = sp.bestStreak;
+  state.totalMs += sp.len*1000; state.sessions++;
+  save();
+  sEng.target="";
+  document.getElementById("sTarget").innerHTML =
+    '<span class="muted" style="font-size:1rem">Time. Press <strong>Start sprint</strong> to go again.</span>';
+  document.getElementById("sprintResult").innerHTML =
+      '<div class="result"><div class="big">'+sp.points.toLocaleString()+'</div>'
+    + '<div class="sub">points &middot; <strong>'+wpm+'</strong> wpm &middot; <strong>'+cpm+'</strong> letters/min '
+    + '&middot; <strong>'+acc+'%</strong> accuracy &middot; '+sp.special+' accented characters '
+    + '&middot; best streak '+sp.bestStreak+'</div>'
+    + (isPB ? '<div class="pbtag">New personal best</div>'
+            : '<div class="muted small" style="margin-top:6px">Your best is '
+              + (b.points||0).toLocaleString()+' points at '+(b.wpm||0)+' wpm.</div>')
+    + (state.firstSprint && !isPB ? '' : '')
+    + '</div>';
+  clearKb();
+  renderBadges(); renderProgress(); renderMyCode();
+}
+
+/* ---------- 8. LEVEL LIST / PROGRESS / BADGES ------------------------------ */
+function renderLevels(){
+  var host=document.getElementById("levels"), html="";
+  LEVELS.forEach(function(l){
+    var b=state.best[l.id];
+    html += '<button class="lvl" type="button" data-id="'+l.id+'"><span class="lt">'+esc(l.name)
+         + (b?'<span class="star">'+b.wpm+' wpm · '+b.acc+'%</span>':'')
+         + '</span><span class="ld">'+esc(l.tag)+'</span></button>';
+  });
+  if(state.custom && state.custom.length){
+    var bc=state.best["custom"];
+    html += '<button class="lvl" type="button" data-id="custom"><span class="lt">Class list'
+         + (bc?'<span class="star">'+bc.wpm+' wpm · '+bc.acc+'%</span>':'')
+         + '</span><span class="ld">'+state.custom.length+' item'+(state.custom.length===1?"":"s")
+         + ' from your teacher</span></button>';
+  }
+  host.innerHTML = html;
+  Array.prototype.forEach.call(host.querySelectorAll(".lvl"), function(b){
+    b.addEventListener("click", function(){ startLevel(b.getAttribute("data-id")); });
+  });
+}
+function markActive(id){
+  Array.prototype.forEach.call(document.querySelectorAll(".lvl"), function(b){
+    b.className = "lvl" + (id && b.getAttribute("data-id")===id ? " active" : "");
+  });
+}
+function weakList(){
+  var arr=[];
+  for(var c in state.weak) if(state.weak.hasOwnProperty(c) && c.trim()) arr.push([c,state.weak[c]]);
+  arr.sort(function(a,b){ return b[1]-a[1]; });
+  return arr.slice(0,8);
+}
+function overall(){
+  var done=countBest(state), wsum=0, asum=0, n=0;
+  for(var k in state.best) if(state.best.hasOwnProperty(k)){ wsum+=state.best[k].wpm; asum+=state.best[k].acc; n++; }
+  return { done:done, of:LEVELS.length, wpm:n?Math.round(wsum/n):0, acc:n?Math.round(asum/n):0,
+           mins:Math.round(state.totalMs/60000) };
+}
+function renderProgress(){
+  var o=overall(), w=weakList(), sb=state.sprintBest||{}, rows="";
+  LEVELS.forEach(function(l){
+    var b=state.best[l.id];
+    rows += '<tr><td>'+esc(l.name)+'</td><td class="num">'+(b?b.wpm:"—")
+         + '</td><td class="num">'+(b?b.acc+"%":"—")+'</td><td class="muted tiny">'
+         + (b?b.date:"not attempted")+'</td></tr>';
+  });
+  if(state.best["custom"]){
+    var bc=state.best["custom"];
+    rows += '<tr><td>Class list</td><td class="num">'+bc.wpm+'</td><td class="num">'+bc.acc
+         + '%</td><td class="muted tiny">'+bc.date+'</td></tr>';
+  }
+  var gain = "";
+  if(state.firstSprint && sb.wpm && state.firstSprint.wpm){
+    var d = sb.wpm - state.firstSprint.wpm;
+    if(d>0) gain = ' &middot; up <strong>'+d+' wpm</strong> since your first sprint on '+state.firstSprint.date;
+  }
+  document.getElementById("progressBody").innerHTML =
+      '<p class="small"><strong>'+o.done+' of '+o.of+'</strong> drills completed &middot; average <strong>'
+    + o.wpm+' wpm</strong> at <strong>'+o.acc+'%</strong> &middot; about <strong>'+o.mins+' min</strong> of practice.</p>'
+    + (sb.points ? '<p class="small">Best sprint: <strong>'+sb.points.toLocaleString()+' points</strong> — '
+        + sb.wpm+' wpm, '+sb.cpm+' letters/min, '+sb.acc+'% on '+sb.date+gain+'.</p>' : '')
+    + '<table><thead><tr><th>Drill</th><th style="text-align:right">Best wpm</th>'
+    + '<th style="text-align:right">Accuracy</th><th>Last</th></tr></thead><tbody>'+rows+'</tbody></table>'
+    + (w.length ? '<p class="small" style="margin-top:12px"><strong>Keys to work on:</strong> '
+        + w.map(function(p){ return '<span class="chip weak">'+esc(p[0])+' &times;'+p[1]+'</span>'; }).join("")+'</p>' : '');
+}
+function renderBadges(){
+  var html="", newly=[];
+  BADGES.forEach(function(b){
+    var got=false;
+    try{ got = b.t(state); }catch(e){ got=false; }
+    if(got && !state.badges[b.id]){ state.badges[b.id]=today(); newly.push(b.n); }
+    html += '<div class="badge'+(got?" got":"")+'"><div class="bn">'+(got?"★ ":"☆ ")+esc(b.n)+'</div>'
+          + '<div class="bd">'+esc(b.d)+'</div></div>';
+  });
+  if(newly.length) save();
+  document.getElementById("badges").innerHTML = html;
+}
+
+/* ---------- 9. CODES, REPORT, LEADERBOARD ---------------------------------- */
+function hash(str){
+  var h=0x811c9dc5;
+  for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=(h+((h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24)))>>>0; }
+  return ("000000"+h.toString(36).toUpperCase()).slice(-6);
+}
+function scoreCode(){
+  var sb = state.sprintBest||{};
+  var body = ["RT1", (state.name||"sin nombre").replace(/[~|]/g,"-"), mmdd(),
+              sb.wpm||0, sb.cpm||0, sb.acc||0, sb.points||0].join("~");
+  return body + "~" + hash(body);
+}
+function parseCode(line){
+  var m = String(line).match(/RT1~[^~]+~\d{4}~\d+~\d+~\d+~\d+~[0-9A-Z]{6}/);
+  if(!m) return null;
+  var p = m[0].split("~");
+  var body = p.slice(0,7).join("~");
+  return { name:p[1], date:p[2], wpm:+p[3], cpm:+p[4], acc:+p[5], points:+p[6],
+           ok: hash(body)===p[7] };
+}
+function renderMyCode(){
+  var el = document.getElementById("myCode");
+  if(!state.sprintBest || !state.sprintBest.points){
+    el.textContent = "Finish a sprint first — then your code appears here."; return;
+  }
+  el.textContent = scoreCode();
+}
+function summaryText(){
+  var o=overall(), w=weakList(), sb=state.sprintBest||{}, L=[];
+  L.push("Raider Teclado — Spanish typing practice");
+  L.push("Student: " + (state.name||"(no name entered)"));
+  L.push("Date: " + today());
+  L.push("");
+  L.push("Drills completed: "+o.done+" of "+o.of);
+  L.push("Average speed: "+o.wpm+" words per minute");
+  L.push("Average accuracy: "+o.acc+"%");
+  L.push("Practice time: about "+o.mins+" minutes");
+  if(sb.points) L.push("Best sprint: "+sb.points+" points, "+sb.wpm+" wpm, "+sb.cpm+" letters/min, "+sb.acc+"%");
+  L.push("");
+  L.push("Per drill:");
+  LEVELS.forEach(function(l){
+    var b=state.best[l.id];
+    L.push("  "+l.name+" — "+(b? b.wpm+" wpm, "+b.acc+"%, "+b.date : "not attempted"));
+  });
+  if(state.best["custom"]) L.push("  Class list — "+state.best["custom"].wpm+" wpm, "
+    +state.best["custom"].acc+"%, "+state.best["custom"].date);
+  if(w.length){ L.push(""); L.push("Keys still missed most: "
+    + w.map(function(p){ return p[0]+" ("+p[1]+")"; }).join(", ")); }
+  L.push("");
+  L.push("Score code: " + scoreCode());
+  return L.join("\n");
+}
+function reportHtml(){
+  var o=overall(), w=weakList(), sb=state.sprintBest||{}, rows="";
+  LEVELS.forEach(function(l){
+    var b=state.best[l.id];
+    rows += "<tr><td>"+esc(l.name)+"</td><td class='n'>"+(b?b.wpm:"&mdash;")+"</td><td class='n'>"
+         + (b?b.acc+"%":"&mdash;")+"</td><td>"+(b?b.date:"not attempted")+"</td></tr>";
+  });
+  if(state.best["custom"]){ var bc=state.best["custom"];
+    rows += "<tr><td>Class list</td><td class='n'>"+bc.wpm+"</td><td class='n'>"+bc.acc+"%</td><td>"+bc.date+"</td></tr>"; }
+  return "<!DOCTYPE html><html lang='en'><head><meta charset='utf-8'><title>Raider Teclado report — "
+    + esc(state.name||"student") + "</title><style>"
+    + "body{font-family:'Segoe UI',system-ui,sans-serif;max-width:660px;margin:36px auto;padding:0 20px;color:#1b1c1f;line-height:1.55}"
+    + "h1{font-size:1.25rem;margin:0 0 2px}h1 span{color:#C11430}"
+    + ".sub{color:#5d6068;font-size:.88rem;margin-bottom:22px}"
+    + "table{border-collapse:collapse;width:100%;font-size:.9rem;margin:14px 0}"
+    + "th,td{text-align:left;padding:7px 9px;border-bottom:1px solid #e3e3e6}"
+    + "th{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:#5d6068}td.n{text-align:right}"
+    + ".big{display:flex;gap:28px;margin:18px 0;flex-wrap:wrap}"
+    + ".big div b{display:block;font-size:1.5rem}.big div span{color:#5d6068;font-size:.82rem}"
+    + ".chk{margin-top:26px;padding-top:12px;border-top:1px solid #e3e3e6;font-family:Consolas,monospace;font-size:.76rem;color:#5d6068;word-break:break-all}"
+    + "</style></head><body>"
+    + "<h1>Raider Teclado <span>&mdash;</span> Spanish typing practice</h1>"
+    + "<div class='sub'>"+esc(state.name||"(no name entered)")+" &middot; "+today()
+    + " &middot; Regis Jesuit Educational Technology</div>"
+    + "<div class='big'><div><b>"+o.done+" / "+o.of+"</b><span>drills completed</span></div>"
+    + "<div><b>"+o.wpm+"</b><span>average wpm</span></div>"
+    + "<div><b>"+o.acc+"%</b><span>average accuracy</span></div>"
+    + "<div><b>"+o.mins+"</b><span>minutes practiced</span></div></div>"
+    + (sb.points ? "<p style='font-size:.9rem'><strong>Best sprint:</strong> "+sb.points+" points &middot; "
+        + sb.wpm+" wpm &middot; "+sb.cpm+" letters per minute &middot; "+sb.acc+"% accuracy ("+sb.date+")</p>" : "")
+    + "<table><thead><tr><th>Drill</th><th style='text-align:right'>Best wpm</th>"
+    + "<th style='text-align:right'>Accuracy</th><th>Last worked</th></tr></thead><tbody>"+rows+"</tbody></table>"
+    + (w.length ? "<p style='font-size:.88rem'><strong>Keys still missed most:</strong> "
+        + w.map(function(p){ return esc(p[0])+" ("+p[1]+")"; }).join(", ")+"</p>" : "")
+    + "<div class='chk'>Score code: "+esc(scoreCode())
+    + "<br>Generated by rjedtech.github.io/Raider-Teclado &mdash; figures come from this browser only.</div>"
+    + "</body></html>";
+}
+function download(filename, text, mime){
+  var blob=new Blob([text],{type:(mime||"text/plain")+";charset=utf-8"});
+  var url=URL.createObjectURL(blob), a=document.createElement("a");
+  a.href=url; a.download=filename; document.body.appendChild(a); a.click();
+  setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },400);
+}
+function safeName(){
+  return (state.name||"student").replace(/[^A-Za-z0-9À-ɏ ]+/g,"").trim().replace(/\s+/g,"-")||"student";
+}
+
+var boardRows = [];
+function betterCode(a,b){ if(a.ok !== b.ok) return a.ok; return a.points > b.points; }
+function buildBoard(){
+  var raw = document.getElementById("boardIn").value.split(/\r?\n/);
+  var seen = {}, bad = 0, out = [];
+  raw.forEach(function(line){
+    if(!line.trim()) return;
+    var p = parseCode(line);
+    if(!p){ if(line.trim().length>4) bad++; return; }
+    var key = p.name.toLowerCase();
+    // A code that checks out always outranks one that does not, however high its points.
+    if(!seen[key] || betterCode(p, seen[key])) seen[key] = p;
+  });
+  for(var k in seen) if(seen.hasOwnProperty(k)) out.push(seen[k]);
+  var sortKey = document.getElementById("boardSort").value;
+  out.sort(function(a,b){ return b[sortKey]-a[sortKey]; });
+  boardRows = out;
+  var host = document.getElementById("boardOut");
+  if(!out.length){
+    host.innerHTML = '<p class="small muted">No valid score codes found yet.</p>';
+    document.getElementById("boardNote").textContent = bad ? bad+" line(s) did not contain a usable code." : "";
+    return;
+  }
+  var html = '<table><thead><tr><th>#</th><th>Student</th><th style="text-align:right">Points</th>'
+           + '<th style="text-align:right">wpm</th><th style="text-align:right">letters/min</th>'
+           + '<th style="text-align:right">Accuracy</th><th></th></tr></thead><tbody>';
+  out.forEach(function(r,i){
+    html += '<tr'+(i===0?' class="rank1"':'')+'><td>'+(i+1)+'</td><td>'+esc(r.name)+'</td>'
+         + '<td class="num">'+r.points.toLocaleString()+'</td><td class="num">'+r.wpm+'</td>'
+         + '<td class="num">'+r.cpm+'</td><td class="num">'+r.acc+'%</td>'
+         + '<td class="tiny">'+(r.ok?'<span style="color:var(--good)">✓ checks out</span>'
+                                    :'<span style="color:var(--bad)">✗ edited</span>')+'</td></tr>';
+  });
+  html += '</tbody></table>';
+  host.innerHTML = html;
+  var badCount = out.filter(function(r){ return !r.ok; }).length;
+  document.getElementById("boardNote").textContent =
+      out.length+" student"+(out.length===1?"":"s")+" listed"
+    + (bad ? " · "+bad+" line(s) had no usable code" : "")
+    + (badCount ? " · "+badCount+" code(s) do not match their numbers" : "");
+}
+function boardCsv(){
+  var L = ["rank,student,points,wpm,letters_per_min,accuracy,code_valid"];
+  boardRows.forEach(function(r,i){
+    L.push([i+1, '"'+r.name.replace(/"/g,'""')+'"', r.points, r.wpm, r.cpm, r.acc, r.ok?"yes":"no"].join(","));
+  });
+  download("Raider-Teclado-leaderboard-"+today()+".csv", L.join("\n"), "text/csv");
+}
+
+/* ---------- 10. WIRING ----------------------------------------------------- */
+function showView(v){
+  ["practice","sprint","progress","board","cheat"].forEach(function(n){
+    document.getElementById("v-"+n).className = "view" + (n===v ? " on" : "");
+    var t = document.getElementById("t-"+n);
+    t.setAttribute("aria-selected", n===v ? "true" : "false");
+  });
+  if(v==="progress"){ renderProgress(); renderMyCode(); }
+  if(v==="sprint")  renderBadges();
+}
+function init(){
+  load();
+  kbEl = document.getElementById("kb");
+  renderKb();
+
+  pEng = makeEngine({
+    el:document.getElementById("target"), cap:document.getElementById("capture"),
+    showKeys:true, bar:"bar",
+    onChar:function(got, want){
+      if(!pr.started) pr.started = Date.now();
+      if(got === want){
+        pr.chars++;
+        state.cleanChars[want] = (state.cleanChars[want]||0)+1;
+      } else {
+        pr.errs++; pr.lineClean=false; pr.drillClean=false;
+        if(want!==undefined) state.weak[want] = (state.weak[want]||0)+1;
+      }
+      scheduleSave();
+      updatePracticeStats();
+    },
+    onDone:function(){ setTimeout(function(){ pr.idx++; loadLine(); }, 200); },
+    onPaste:function(){ flashNote("Pasting is off \u2014 the point is the keys."); }
+  });
+
+  sEng = makeEngine({
+    el:document.getElementById("sTarget"), cap:document.getElementById("sCapture"),
+    showKeys:false,
+    onChar:function(got, want){
+      if(!sp.on) return;
+      if(!sp.started){
+        sp.started = Date.now(); sp.endsAt = sp.started + sp.len*1000;
+        sp.tick = setInterval(sprintTick, 200);
+      }
+      if(got === want){
+        sp.chars++; sp.streak++;
+        if(sp.streak > sp.bestStreak) sp.bestStreak = sp.streak;
+        state.cleanChars[want] = (state.cleanChars[want]||0)+1;
+        var base = SPECIAL.indexOf(want) > -1 ? 25 : 10;
+        if(base===25) sp.special++;
+        var gained = Math.round(base * multiplier());
+        sp.points += gained;
+        if(base===25) floatPts(gained);
+      } else {
+        sp.errs++; sp.streak = 0;
+        sp.points = Math.max(0, sp.points-5);
+        if(want!==undefined) state.weak[want] = (state.weak[want]||0)+1;
+      }
+      scheduleSave();
+      updateSprintStats();
+    },
+    onDone:function(){ if(sp.on) setTimeout(function(){ sEng.setTarget(sprintLine(), false); sEng.focus(); }, 60); },
+    onPaste:function(){ flashNote("Pasting is off \u2014 the point is the keys."); }
+  });
+
+  renderLevels(); renderProgress(); renderBadges(); renderMyCode();
+  document.getElementById("cheat").innerHTML = CHEAT.map(function(r){
+    return "<tr><td style='font-size:1.05rem'>"+r[0]+"</td><td>"+r[1]+"</td><td class='muted tiny'>"+r[2]+"</td></tr>";
+  }).join("");
+
+  var nameIn = document.getElementById("student");
+  nameIn.value = state.name || "";
+  nameIn.addEventListener("input", function(){ state.name = nameIn.value.trim(); save(); renderMyCode(); });
+
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+    t.addEventListener("click", function(){ showView(t.getAttribute("data-v")); });
+  });
+
+  var probe=document.getElementById("probe"), verdict=document.getElementById("verdict");
+  probe.addEventListener("input", function(){
+    var v=probe.value;
+    if(!v){ verdict.className="verdict"; return; }
+    if(v==="ñ"||v==="Ñ"){
+      verdict.className="verdict ok";
+      verdict.innerHTML="<strong>Spanish layout is on.</strong> That key gives ñ. Pick a drill below.";
+    } else if(v===";"||v===":"){
+      verdict.className="verdict no";
+      verdict.innerHTML="<strong>You are still on the English layout.</strong> That key gave “"+esc(v)
+        +"” instead of ñ.<br>Press <kbd>Windows</kbd> + <kbd>Space</kbd> until the box by the clock reads "
+        +"<strong>ESP</strong>, then try again. If ESP is not offered: Settings &rarr; Time &amp; language &rarr; "
+        +"Language &amp; region &rarr; Spanish &rarr; … &rarr; Language options &rarr; Add a keyboard &rarr; "
+        +"<strong>Latin American</strong>.";
+    } else {
+      verdict.className="verdict no";
+      verdict.innerHTML="That key gave “"+esc(v)+"”. Expected ñ. Check you pressed the key "
+        +"immediately right of <kbd>L</kbd>, and that the box by the clock reads <strong>ESP</strong>.";
+    }
+  });
+  document.getElementById("probeAgain").addEventListener("click", function(){
+    probe.value=""; verdict.className="verdict"; probe.focus(); });
+
+  document.getElementById("restartBtn").addEventListener("click", function(){
+    if(pr.level) startLevel(pr.level.id); });
+  document.getElementById("skipBtn").addEventListener("click", function(){
+    if(!pr.level) return; pr.idx++; loadLine(); });
+
+  var customIn=document.getElementById("customIn"), note=document.getElementById("customNote");
+  if(state.custom){ customIn.value = state.custom.join("\n"); note.textContent = state.custom.length+" saved."; }
+  document.getElementById("saveCustom").addEventListener("click", function(){
+    var lines = customIn.value.split(/\r?\n/).map(function(s){ return s.trim(); })
+                 .filter(function(s){ return s.length>0; });
+    state.custom = lines.length ? lines : null; save(); renderLevels();
+    note.textContent = lines.length ? lines.length+" saved." : "Nothing saved.";
+  });
+  document.getElementById("clearCustom").addEventListener("click", function(){
+    state.custom=null; customIn.value=""; save(); renderLevels(); note.textContent="Removed."; });
+
+  document.getElementById("sprintGo").addEventListener("click", startSprint);
+
+  document.getElementById("btnReport").addEventListener("click", function(){
+    if(!state.name && !confirm("No name entered. Download the report anyway?")){
+      showView("practice"); document.getElementById("student").focus(); return; }
+    download("Raider-Teclado-"+safeName()+"-"+today()+".html", reportHtml(), "text/html");
+  });
+  document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
+  function copyTo(txt, btn, label){
+    function done(){ var old=btn.textContent; btn.textContent="Copied";
+      setTimeout(function(){ btn.textContent=label||old; },1600); }
+    if(navigator.clipboard && navigator.clipboard.writeText)
+      navigator.clipboard.writeText(txt).then(done, fallback);
+    else fallback();
+    function fallback(){
+      var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){} document.body.removeChild(ta);
+    }
+  }
+  document.getElementById("btnCopy").addEventListener("click", function(){
+    copyTo(summaryText(), this, "Copy summary text"); });
+  document.getElementById("btnCode").addEventListener("click", function(){
+    if(!state.sprintBest || !state.sprintBest.points){ alert("Finish a sprint first."); return; }
+    copyTo(scoreCode(), this, "Copy my score code"); });
+  document.getElementById("btnReset").addEventListener("click", function(){
+    if(!confirm("Erase all saved progress in this browser? This cannot be undone.")) return;
+    var keepCustom=state.custom, keepName=state.name;
+    state = {name:keepName, best:{}, sprintBest:{}, weak:{}, cleanChars:{}, totalMs:0, sessions:0,
+             perfectDrills:0, bestStreak:0, custom:keepCustom, firstUse:today(), firstSprint:null, badges:{}};
+    save(); renderLevels(); renderProgress(); renderBadges(); renderMyCode();
+  });
+
+  document.getElementById("boardGo").addEventListener("click", buildBoard);
+  document.getElementById("boardSort").addEventListener("change", function(){ if(boardRows.length) buildBoard(); });
+  document.getElementById("boardCsv").addEventListener("click", function(){
+    if(!boardRows.length){ alert("Build the leaderboard first."); return; } boardCsv(); });
+  document.getElementById("boardBig").addEventListener("click", function(){
+    var el=document.getElementById("boardOut");
+    var big = el.className.indexOf("big-screen")>-1;
+    el.className = big ? "" : "big-screen";
+    this.textContent = big ? "Big screen" : "Normal size";
+  });
+
+  document.addEventListener("keydown", function(e){
+    if(e.ctrlKey||e.altKey||e.metaKey) return;
+    if(!(e.key.length===1 || e.key==="Dead")) return;
+    var onSprint = document.getElementById("v-sprint").className.indexOf("on")>-1;
+    if(onSprint){ if(sp.on && document.activeElement!==sEng.cap) sEng.focus(); }
+    else if(pEng.target && document.activeElement!==pEng.cap &&
+            document.activeElement!==document.getElementById("student") &&
+            document.activeElement!==document.getElementById("probe") &&
+            document.activeElement.tagName!=="TEXTAREA"){ pEng.focus(); }
+  });
+}
+document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+</body>
+</html>
