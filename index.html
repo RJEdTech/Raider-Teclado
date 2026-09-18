@@ -109,7 +109,23 @@ select{font:inherit;font-size:.86rem;padding:7px 9px;border-radius:8px;border:1p
 .target .ch.done{color:var(--good);background:var(--goodbg)}
 .target .ch.err{color:var(--bad);background:var(--badbg);text-decoration:underline wavy}
 .target .ch.cur{background:var(--red);color:#fff}
-#capture{position:absolute;left:-9999px;top:0;opacity:0;width:10px;height:10px}
+.target .ch.want{opacity:.55;font-size:.68em;vertical-align:super;color:var(--muted);
+  background:none;text-decoration:none;margin-left:1px;padding:0}
+@keyframes caretblink{0%,100%{opacity:1}50%{opacity:.3}}
+.tgt-wrap:focus-within .target .ch.cur{animation:caretblink 1.06s step-end infinite}
+.typing-hint{position:absolute;inset:0;display:none;align-items:center;justify-content:center;
+  pointer-events:none;font-size:.9rem;font-weight:650;color:var(--muted);
+  background:rgba(128,128,128,.10);border-radius:10px}
+.tgt-wrap.armed:not(:focus-within) .typing-hint{display:flex}
+.tgt-wrap{position:relative}
+.tgt-wrap > input{
+  position:absolute; inset:0; width:100%; height:100%; margin:0; padding:16px;
+  border:1px solid transparent; border-radius:10px; background:transparent;
+  color:transparent; caret-color:transparent; font-size:16px; outline:none;
+  -webkit-text-fill-color:transparent;
+}
+.tgt-wrap > input:focus{ outline:none }
+.tgt-wrap:focus-within .target{ border-color:rgba(193,20,48,.55) }
 .stats{display:flex;gap:22px;flex-wrap:wrap;margin-top:14px;font-size:.84rem}
 .stat b{display:block;font-size:1.25rem;font-weight:700;line-height:1.2}
 .bar{height:6px;border-radius:99px;background:var(--soft);overflow:hidden;margin-top:12px;border:1px solid var(--line)}
@@ -160,6 +176,8 @@ select{font:inherit;font-size:.86rem;padding:7px 9px;border-radius:8px;border:1p
 .k.hot .us,.k.hot .sh{opacity:.85;color:#fff}
 .k.hot2{background:rgba(193,20,48,.18);border-color:var(--red)}
 .k.dead{outline:2px dashed var(--warn);outline-offset:-3px}
+.k.next{outline:2px solid rgba(193,20,48,.42);outline-offset:-2px}
+.step.dim{opacity:.48}
 .legend{font-size:.76rem;color:var(--muted);margin-top:10px;display:flex;gap:16px;flex-wrap:wrap}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;border:1px solid var(--keyline)}
@@ -179,6 +197,24 @@ textarea{width:100%;font:inherit;font-size:.88rem;padding:10px;border-radius:9px
 details{border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin:10px 0;background:var(--soft)}
 summary{cursor:pointer;font-weight:650;font-size:.9rem}
 details[open] summary{margin-bottom:8px}
+details.install{border-color:rgba(193,20,48,.45);background:rgba(193,20,48,.05)}
+details.install > summary{color:var(--red);font-weight:700}
+.steps{counter-reset:s;list-style:none;margin:10px 0 0;padding:0}
+.steps li{counter-increment:s;position:relative;padding:0 0 12px 34px;font-size:.89rem;line-height:1.5}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:23px;height:23px;
+  border-radius:50%;background:var(--red);color:#fff;font-size:.75rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center}
+.steps li:last-child{padding-bottom:2px}
+.path{font-weight:650}
+.path .arrow{color:var(--red);margin:0 5px;font-weight:700}
+.figcap{font-size:.76rem;color:var(--muted);margin-top:5px;text-align:center}
+.fig{margin:14px 0 4px;text-align:center}
+.fig svg{max-width:100%;height:auto}
+.whybox{border-left:3px solid var(--red);padding:2px 0 2px 13px;margin:12px 0 0}
+.whybox p{font-size:.86rem;margin:0 0 7px}
+.whybox p:last-child{margin-bottom:0}
+.panel a{color:var(--red);font-weight:600;text-decoration-thickness:1px;text-underline-offset:2px}
+.panel a:hover{text-decoration:none}
 .big-screen table{font-size:1.25rem}
 .big-screen th{font-size:.9rem}
 .rank1{color:var(--gold);font-weight:800}
@@ -223,6 +259,7 @@ footer a{color:inherit}
         <button id="probeAgain" type="button">Clear</button>
       </div>
       <div class="verdict" id="verdict"></div>
+      <div id="installHost1"></div>
     </section>
 
     <section class="panel noprint">
@@ -230,13 +267,19 @@ footer a{color:inherit}
       <div class="levels" id="levels"></div>
       <details>
         <summary>Teacher: load your own word or sentence list</summary>
-        <p class="tiny muted">One word or sentence per line. It stays in this browser &mdash; nothing is uploaded.
-        Paste this week&rsquo;s vocabulary and it becomes a drill called &ldquo;Class list,&rdquo; usable in Sprint too.</p>
+        <p class="tiny muted">One word or sentence per line. Nothing is uploaded &mdash; the list is carried
+        inside the link you hand out, so students never have to type it in themselves.
+        It becomes a drill called &ldquo;Class list,&rdquo; usable in Sprint too.</p>
         <textarea id="customIn" placeholder="la canción&#10;el pingüino&#10;¿Cómo se llama tu compañero?&#10;Mañana es el cumpleaños de mi mamá."></textarea>
         <div class="row" style="margin-top:9px">
           <button id="saveCustom" class="primary" type="button">Save class list</button>
+          <button id="shareCustom" type="button">Copy student link</button>
           <button id="clearCustom" type="button">Remove</button>
           <span class="tiny muted" id="customNote"></span>
+        </div>
+        <div class="code" id="shareLink" style="display:none"></div>
+        <p class="tiny muted" id="shareHelp" style="display:none">Post this link in Canvas or Teams.
+          Opening it loads your list straight into the student&rsquo;s copy &mdash; no typing, no accounts.
         </div>
       </details>
     </section>
@@ -253,10 +296,14 @@ footer a{color:inherit}
         </div>
       </div>
 
-      <div class="target" id="target" tabindex="0" role="textbox" aria-label="Typing target">
-        <span class="muted" style="font-size:1rem">Choose a drill above, then start typing.</span>
+      <div class="tgt-wrap">
+        <div class="target" id="target" aria-hidden="true">
+          <span class="muted" style="font-size:1rem">Choose a drill above, then start typing.</span>
+        </div>
+        <div class="typing-hint">Click here, then type</div>
+        <input id="capture" autocomplete="off" autocorrect="off" autocapitalize="off"
+               spellcheck="false" aria-label="Type the line shown above">
       </div>
-      <input id="capture" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
       <div class="bar"><i id="bar"></i></div>
 
       <div class="stats">
@@ -310,10 +357,14 @@ footer a{color:inherit}
         <div class="combo hidden" id="combo">&times;1.0 &nbsp;streak 0</div>
       </div>
 
-      <div class="target" id="sTarget" tabindex="0" role="textbox" aria-label="Sprint target">
-        <span class="muted" style="font-size:1rem">Press <strong>Start sprint</strong>. The clock begins on your first keystroke.</span>
+      <div class="tgt-wrap">
+        <div class="target" id="sTarget" aria-hidden="true">
+          <span class="muted" style="font-size:1rem">Press <strong>Start sprint</strong>. The clock begins on your first keystroke.</span>
+        </div>
+        <div class="typing-hint">Click here, then type</div>
+        <input id="sCapture" autocomplete="off" autocorrect="off" autocapitalize="off"
+               spellcheck="false" aria-label="Type the line shown above">
       </div>
-      <input id="sCapture" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-hidden="true" tabindex="-1">
 
       <div class="stats">
         <div class="stat"><b id="spWpm">&mdash;</b><span class="muted">words / min</span></div>
@@ -410,12 +461,10 @@ footer a{color:inherit}
       <h3>Turning the layout on</h3>
       <p class="small"><strong>Switch between English and Spanish:</strong> <kbd>Windows</kbd> + <kbd>Space</kbd>.
       The indicator by the clock flips between <strong>ENG</strong> and <strong>ESP</strong>.</p>
-      <p class="small"><strong>If ESP is not offered:</strong> Settings &rarr; Time &amp; language &rarr;
-      Language &amp; region &rarr; Spanish &rarr; &hellip; &rarr; Language options &rarr; Add a keyboard &rarr;
-      <strong>Latin American</strong>. (On a school laptop this is allowed &mdash; it adds a keyboard, not a display language.)</p>
       <p class="small"><strong>The accent key does nothing at first &mdash; that is correct.</strong>
       <kbd>[</kbd> sends <kbd>&acute;</kbd> and waits. The accent appears when you press the vowel.
       To type a bare <kbd>&acute;</kbd>, press <kbd>[</kbd> then <kbd>Space</kbd>.</p>
+      <div id="installHost2"></div>
     </section>
   </div>
 
@@ -573,6 +622,31 @@ var SENT = [
 ];
 ACCW = ACCW.filter(function(w){ return w!=="mazán"; });
 
+/* Where the ENG/ESP indicator actually sits - the thing students cannot find. */
+var TASKBAR_SVG =
+ '<div class="fig"><svg viewBox="0 0 440 96" role="img" width="440"'
+ + ' aria-label="The Windows taskbar, with the language button reading ESP to the left of the clock">'
+ + '<rect x="0" y="34" width="440" height="40" rx="7" fill="rgba(128,128,128,.16)"'
+ + ' stroke="rgba(128,128,128,.34)"/>'
+ + '<g fill="currentColor" opacity=".38">'
+ + '<rect x="150" y="47" width="14" height="14" rx="3"/>'
+ + '<rect x="174" y="47" width="14" height="14" rx="3"/>'
+ + '<rect x="198" y="47" width="14" height="14" rx="3"/></g>'
+ + '<g fill="currentColor" opacity=".45">'
+ + '<rect x="300" y="49" width="11" height="10" rx="2"/>'
+ + '<rect x="318" y="49" width="11" height="10" rx="2"/></g>'
+ + '<rect x="338" y="41" width="40" height="26" rx="6" fill="#C11430"/>'
+ + '<text x="358" y="58" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"'
+ + ' font-size="13" font-weight="700" fill="#ffffff">ESP</text>'
+ + '<text x="404" y="58" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"'
+ + ' font-size="12" fill="currentColor" opacity=".7">9:41</text>'
+ + '<path d="M358 88 L358 74 M352 80 L358 74 L364 80" stroke="#C11430" stroke-width="2.2"'
+ + ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
+ + '</svg>'
+ + '<div class="figcap">Bottom-right of your screen. Click it, or press '
+ + '<kbd>Windows</kbd> + <kbd>Space</kbd>, to flip between <strong>ENG</strong> and <strong>ESP</strong>.</div>'
+ + '</div>';
+
 var LEVELS = [
   { id:"l1", name:"1 · The ñ key", tag:"Right of L",
     prompt:"ñ is a key of its own — the one printed ; on your keyboard. No accent key needed.",
@@ -642,6 +716,42 @@ var CHEAT = [
   ["Switch layouts","<kbd>Windows</kbd> + <kbd>Space</kbd>","Watch for ESP / ENG by the clock."]
 ];
 
+/* One source of truth; rendered into both the Practice tab and the Shortcut sheet. */
+var INSTALL_HTML =
+ '<details class="install">'
+ + '<summary>I don\'t have the Spanish keyboard yet &mdash; how do I add it?</summary>'
+ + '<p class="small muted" style="margin-top:6px">About a minute. You are adding a <em>keyboard</em>, '
+ + 'not turning your computer into Spanish &mdash; menus, files and English typing all stay exactly as they are, '
+ + 'and nothing has to download. This works on a school laptop without an admin password.</p>'
+ + '<ol class="steps">'
+ + '<li>Press <kbd>Windows</kbd> + <kbd>I</kbd> to open <strong>Settings</strong>.</li>'
+ + '<li>Go to <span class="path">Time &amp; language<span class="arrow">&rsaquo;</span>Language &amp; region</span>.</li>'
+ + '<li>Under <strong>Preferred languages</strong>, find <strong>English (United States)</strong> and click the '
+ + '<strong>&hellip;</strong> (three dots) at the right of that row.</li>'
+ + '<li>Choose <strong>Language options</strong>.</li>'
+ + '<li>Scroll down to <strong>Keyboards</strong> and click <strong>Add a keyboard</strong>.</li>'
+ + '<li>Pick <strong>Latin American</strong> from the list. It is ready immediately &mdash; no restart.</li>'
+ + '<li>Press <kbd>Windows</kbd> + <kbd>Space</kbd> to switch. The box by the clock flips '
+ + '<strong>ENG</strong> &harr; <strong>ESP</strong>. Then run the test above.</li>'
+ + '</ol>'
+ + TASKBAR_SVG
+ + '<p class="small" style="margin-top:12px">Microsoft&rsquo;s own instructions, if a screen looks different: '
+ + '<a href="https://support.microsoft.com/en-us/windows/manage-the-input-and-display-language-settings-in-windows-12a10cb4-8626-9b77-0ccb-5013e0c7c7a2" '
+ + 'target="_blank" rel="noopener">Manage language and keyboard settings in Windows</a>.</p>'
+ + '<div class="whybox">'
+ + '<p><strong>Why <em>Latin American</em> and not one of the others?</strong></p>'
+ + '<p>It is the layout used across Spanish-speaking Latin America, and it is the one this class teaches, '
+ + 'so the shortcut sheet, the board and your classmates\' screens all match. The <strong>Spain</strong> layout '
+ + 'is a close cousin &mdash; \u00f1, the accent key, \u00bf and \u00a1 all work the same way, it puts the accent key '
+ + 'in a slightly easier spot, and it keeps <kbd>@</kbd> on <kbd>Shift</kbd>+<kbd>2</kbd>. Everything you practice '
+ + 'here transfers to it except where <kbd>@</kbd> lives.</p>'
+ + '<p>The one to avoid is <strong>US&#8209;International</strong>. It turns the apostrophe and quote keys into '
+ + 'accent keys, so typing <em>don&rsquo;t</em> or <em>&ldquo;hello&rdquo;</em> in an English essay starts throwing '
+ + 'stray accents into your writing. Latin American leaves your English typing completely alone &mdash; you switch '
+ + 'back with <kbd>Windows</kbd> + <kbd>Space</kbd> and everything behaves normally again.</p>'
+ + '</div>'
+ + '</details>';
+
 var BADGES = [
   {id:"first", n:"Primer paso",   d:"Finish any drill.",                     t:function(s){ return countBest(s)>=1; }},
   {id:"enye",  n:"Mañoso",   d:"Type 100 ñ without a miss.",        t:function(s){ return (s.cleanChars["ñ"]||0)>=100; }},
@@ -685,6 +795,20 @@ function mmdd(){ var d=new Date(); return pad(d.getMonth()+1)+pad(d.getDate()); 
 function pad(n){ return (n<10?"0":"")+n; }
 function esc(s){ return String(s).replace(/[&<>"]/g,function(c){
   return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+function listToLink(lines){
+  var payload = btoa(unescape(encodeURIComponent(lines.join("\n"))));
+  return location.origin + location.pathname + "#list=" + encodeURIComponent(payload);
+}
+function listFromHash(){
+  var m = String(location.hash||"").match(/^#list=(.+)$/);
+  if(!m) return null;
+  try{
+    var txt = decodeURIComponent(escape(atob(decodeURIComponent(m[1]))));
+    var lines = txt.split("\n").map(function(s){ return s.trim(); })
+                   .filter(function(s){ return s.length>0; });
+    return lines.length ? lines : null;
+  }catch(e){ return null; }
+}
 function flashNote(msg){
   var el = document.getElementById("flashNote");
   if(!el){ el=document.createElement("div"); el.id="flashNote";
@@ -728,7 +852,18 @@ function renderKb(){
 }
 function clearKb(){ for(var c in keyEls) if(keyEls.hasOwnProperty(c)){
   keyEls[c].className = keyEls[c].className.replace(/\s*(hot2|hot|dead)\b/g,""); } }
-function highlight(ch, stepIndex){
+function keyChips(steps, activeIndex, dim){
+  return steps.map(function(s,i){
+    var bits=[];
+    if(s.shift) bits.push("<kbd>Shift</kbd>");
+    if(s.alt)   bits.push("<kbd>Alt Gr</kbd>");
+    bits.push("<kbd>"+esc(s.label==="space"?"Space":s.label)+"</kbd>");
+    var cls = "step" + (dim ? " dim" : "");
+    var style = (!dim && i===activeIndex) ? ' style="font-weight:700"' : '';
+    return '<span class="'+cls+'"'+style+'>' + bits.join(' <span class="plus">+</span> ') + '</span>';
+  }).join(' <span class="then">then</span> ');
+}
+function highlight(ch, stepIndex, after){
   clearKb();
   var howEl = document.getElementById("howto");
   var steps = HOW[ch];
@@ -739,17 +874,17 @@ function highlight(ch, stepIndex){
   if(step.shift){ if(keyEls.ShiftLeft) keyEls.ShiftLeft.className+=" hot2";
                   if(keyEls.ShiftRight) keyEls.ShiftRight.className+=" hot2"; }
   if(step.alt && keyEls.AltRight) keyEls.AltRight.className += " hot2";
-  var parts = steps.map(function(s,i){
-    var bits=[];
-    if(s.shift) bits.push("<kbd>Shift</kbd>");
-    if(s.alt)   bits.push("<kbd>Alt Gr</kbd>");
-    bits.push("<kbd>"+esc(s.label==="space"?"Space":s.label)+"</kbd>");
-    return '<span class="step"'+(i===stepIndex?' style="font-weight:700"':'')+'>'
-         + bits.join(' <span class="plus">+</span> ') + '</span>';
-  });
-  var joined = parts.join(' <span class="then">then</span> ');
+  var joined = keyChips(steps, stepIndex, false);
   if(steps.length>1 && stepIndex===0)
     joined += ' <span class="then">&mdash; nothing appears after the first key, that is correct</span>';
+  // Lookahead. Without it a space-separated line reads as "press space" half the time.
+  var ahead = after !== undefined ? HOW[after] : null;
+  if(ahead){
+    var lk = keyChips(ahead, -1, true);
+    joined += ' <span class="then">then</span> ' + lk;
+    var lkEl = keyEls[ahead[0].code];
+    if(lkEl && lkEl.className.indexOf("hot")===-1) lkEl.className += " next";
+  }
   howEl.innerHTML = '<span class="muted tiny">Next:</span> ' + joined;
 }
 
@@ -762,24 +897,34 @@ function makeEngine(opts){
   eng.setTarget = function(t, accentMode){
     eng.target=t; eng.typed=""; eng.seen=0; eng.accentMode=!!accentMode;
     eng.cap.value=""; eng.render();
+    if(eng.el.parentNode) eng.el.parentNode.className = t ? "tgt-wrap armed" : "tgt-wrap";
   };
   eng.focus = function(){ try{ eng.cap.focus({preventScroll:true}); }catch(e){ eng.cap.focus(); } };
   eng.render = function(){
     var t=eng.target, typed=eng.typed, html="";
     for(var i=0;i<t.length;i++){
-      var cls="ch";
-      if(i<typed.length) cls += (typed[i]===t[i]) ? " done" : " err";
-      else if(i===typed.length) cls += " cur";
-      var shown = (eng.accentMode && i>=typed.length) ? stripAccents(t[i]) : t[i];
-      html += '<span class="'+cls+'">'+esc(shown===" " ? " " : shown)+'</span>';
+      var cls="ch", shown, extra="";
+      if(i<typed.length){
+        if(typed[i]===t[i]){ cls+=" done"; shown=t[i]; }
+        else {
+          // Show what they actually produced, with the target beside it in small grey,
+          // so a wrong accent is visible instead of silently red.
+          cls+=" err"; shown = (typed[i]===" ") ? "\u00b7" : typed[i];
+          extra = '<span class="ch want">'+esc(t[i]===" " ? "\u2423" : t[i])+'</span>';
+        }
+      } else {
+        if(i===typed.length) cls += " cur";
+        shown = eng.accentMode ? stripAccents(t[i]) : t[i];
+      }
+      html += '<span class="'+cls+'">'+esc(shown===" " ? " " : shown)+'</span>' + extra;
     }
     for(var j=t.length;j<typed.length;j++) html += '<span class="ch err">'+esc(typed[j])+'</span>';
     eng.el.innerHTML = html;
     if(opts.showKeys){
-      var next = t[typed.length];
+      var next = t[typed.length], after = t[typed.length+1];
       if(next !== undefined){
         var steps = HOW[next];
-        highlight(next, (steps && steps.length>1 && eng.deadPending) ? 1 : 0);
+        highlight(next, (steps && steps.length>1 && eng.deadPending) ? 1 : 0, after);
       } else { clearKb(); document.getElementById("howto").innerHTML=""; }
     }
     if(opts.bar){
@@ -791,6 +936,7 @@ function makeEngine(opts){
     if(e.key === "Dead"){ eng.deadPending = true; setTimeout(eng.render,0); }
     else if(e.key.length===1 || e.key==="Backspace"){ eng.deadPending = false; }
     if(e.key==="Tab") e.preventDefault();
+    if(e.key==="Enter"){ e.preventDefault(); if(eng.target) eng.onDone(); }
   });
   eng.cap.addEventListener("paste", function(e){ e.preventDefault(); });
   eng.cap.addEventListener("drop",  function(e){ e.preventDefault(); });
@@ -807,9 +953,11 @@ function makeEngine(opts){
       for(var i=eng.seen;i<v.length;i++) eng.onChar(v[i], eng.target[i], i);
     }
     eng.seen = v.length; eng.typed = v; eng.render();
-    if(v === eng.target) eng.onDone();
+    // Forgiving: reaching the end of the line moves on, clean or not. A student is never
+    // stuck backspacing to hunt one bad character.
+    if(v.length >= eng.target.length) eng.onDone();
   });
-  eng.el.addEventListener("click", eng.focus);
+  if(eng.el.parentNode) eng.el.parentNode.addEventListener("click", eng.focus);
   return eng;
 }
 
@@ -830,7 +978,7 @@ function startLevel(id){
   document.getElementById("drillPrompt").textContent = lvl.prompt;
   markActive(id);
   loadLine();
-  document.getElementById("drillPanel").scrollIntoView({behavior:"smooth",block:"nearest"});
+  document.getElementById("drillPanel").scrollIntoView({block:"nearest"});
 }
 function loadLine(){
   if(pr.idx >= pr.lines.length){ finishLevel(); return; }
@@ -873,7 +1021,7 @@ function finishLevel(){
     + '</div>';
   clearKb(); document.getElementById("howto").innerHTML="";
   document.getElementById("bar").style.width="100%";
-  pEng.target="";
+  pEng.target=""; document.getElementById("target").parentNode.className="tgt-wrap";
   renderLevels(); renderProgress(); renderBadges(); markActive(null);
 }
 
@@ -969,6 +1117,7 @@ function endSprint(){
   state.totalMs += sp.len*1000; state.sessions++;
   save();
   sEng.target="";
+  document.getElementById("sTarget").parentNode.className="tgt-wrap";
   document.getElementById("sTarget").innerHTML =
     '<span class="muted" style="font-size:1rem">Time. Press <strong>Start sprint</strong> to go again.</span>';
   document.getElementById("sprintResult").innerHTML =
@@ -1165,6 +1314,7 @@ function safeName(){
 }
 
 var boardRows = [];
+var copyTo = function(){};
 function betterCode(a,b){ if(a.ok !== b.ok) return a.ok; return a.points > b.points; }
 function buildBoard(){
   var raw = document.getElementById("boardIn").value.split(/\r?\n/);
@@ -1225,6 +1375,10 @@ function showView(v){
 }
 function init(){
   load();
+  // A student arriving on a teacher's link gets the list without typing anything.
+  // Must happen before renderLevels() or the Class list card never appears.
+  var shared = listFromHash();
+  if(shared){ state.custom = shared; save(); }
   kbEl = document.getElementById("kb");
   renderKb();
 
@@ -1278,6 +1432,10 @@ function init(){
   });
 
   renderLevels(); renderProgress(); renderBadges(); renderMyCode();
+  if(shared) flashNote("Loaded your teacher's list \u2014 " + shared.length
+                       + " item" + (shared.length===1?"":"s"));
+  document.getElementById("installHost1").innerHTML = INSTALL_HTML;
+  document.getElementById("installHost2").innerHTML = INSTALL_HTML;
   document.getElementById("cheat").innerHTML = CHEAT.map(function(r){
     return "<tr><td style='font-size:1.05rem'>"+r[0]+"</td><td>"+r[1]+"</td><td class='muted tiny'>"+r[2]+"</td></tr>";
   }).join("");
@@ -1301,9 +1459,9 @@ function init(){
       verdict.className="verdict no";
       verdict.innerHTML="<strong>You are still on the English layout.</strong> That key gave “"+esc(v)
         +"” instead of ñ.<br>Press <kbd>Windows</kbd> + <kbd>Space</kbd> until the box by the clock reads "
-        +"<strong>ESP</strong>, then try again. If ESP is not offered: Settings &rarr; Time &amp; language &rarr; "
-        +"Language &amp; region &rarr; Spanish &rarr; … &rarr; Language options &rarr; Add a keyboard &rarr; "
-        +"<strong>Latin American</strong>.";
+        +"<strong>ESP</strong>, then try again."
+        +"<br><strong>No ESP in the list?</strong> Open the red box just below and follow the seven steps.";
+      var d = document.querySelector("#installHost1 details"); if(d) d.open = true;
     } else {
       verdict.className="verdict no";
       verdict.innerHTML="That key gave “"+esc(v)+"”. Expected ñ. Check you pressed the key "
@@ -1327,7 +1485,20 @@ function init(){
     note.textContent = lines.length ? lines.length+" saved." : "Nothing saved.";
   });
   document.getElementById("clearCustom").addEventListener("click", function(){
-    state.custom=null; customIn.value=""; save(); renderLevels(); note.textContent="Removed."; });
+    state.custom=null; customIn.value=""; save(); renderLevels(); note.textContent="Removed.";
+    document.getElementById("shareLink").style.display="none";
+    document.getElementById("shareHelp").style.display="none"; });
+  document.getElementById("shareCustom").addEventListener("click", function(){
+    var lines = customIn.value.split(/\r?\n/).map(function(s){ return s.trim(); })
+                 .filter(function(s){ return s.length>0; });
+    if(!lines.length){ alert("Type or paste a list first."); return; }
+    state.custom = lines; save(); renderLevels();
+    var url = listToLink(lines);
+    var box = document.getElementById("shareLink");
+    box.textContent = url; box.style.display="block";
+    document.getElementById("shareHelp").style.display="block";
+    copyTo(url, this, "Copy student link");
+  });
 
   document.getElementById("sprintGo").addEventListener("click", startSprint);
 
@@ -1337,7 +1508,7 @@ function init(){
     download("Raider-Teclado-"+safeName()+"-"+today()+".html", reportHtml(), "text/html");
   });
   document.getElementById("btnPrint").addEventListener("click", function(){ window.print(); });
-  function copyTo(txt, btn, label){
+  copyTo = function(txt, btn, label){
     function done(){ var old=btn.textContent; btn.textContent="Copied";
       setTimeout(function(){ btn.textContent=label||old; },1600); }
     if(navigator.clipboard && navigator.clipboard.writeText)
@@ -1347,7 +1518,7 @@ function init(){
       var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select();
       try{ document.execCommand("copy"); done(); }catch(e){} document.body.removeChild(ta);
     }
-  }
+  };
   document.getElementById("btnCopy").addEventListener("click", function(){
     copyTo(summaryText(), this, "Copy summary text"); });
   document.getElementById("btnCode").addEventListener("click", function(){
