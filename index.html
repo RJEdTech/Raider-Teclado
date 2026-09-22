@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Raider Teclado &mdash; Spanish keyboard typing practice</title>
-<meta name="description" content="Learn to type Spanish accents, ñ, ¿ and ¡ on a US keyboard using the Windows Spanish (Latin America) layout. Drills, a timed sprint game, and a paste-in class leaderboard. Free, runs entirely in your browser.">
+<meta name="description" content="Learn to type Spanish accents, ñ, ¿ and ¡ on a US keyboard, on either the US-International or the Spanish (Latin America) Windows layout. Drills, a timed sprint game, and a paste-in class leaderboard. Free, runs entirely in your browser.">
 <script>
 /* Light/dark follows the operating system setting. No in-page toggle by design. */
 (function(){
@@ -169,6 +169,9 @@ select{font:inherit;font-size:.86rem;padding:7px 9px;border-radius:8px;border:1p
   font-size:1rem;font-weight:600;user-select:none}
 .k .us{position:absolute;top:2px;left:5px;font-size:.58rem;font-weight:600;opacity:.42}
 .k .sh{position:absolute;top:2px;right:5px;font-size:.62rem;font-weight:700;opacity:.55}
+.k .ag{position:absolute;bottom:2px;right:5px;font-size:.62rem;font-weight:700;
+  color:var(--rj);opacity:.9}
+.k.hot .ag{color:#fff;opacity:.95}
 .k .main{margin-top:6px}
 .k.wide{flex:1.6 1 0} .k.wider{flex:2.1 1 0} .k.space{flex:7 1 0}
 .k.mod{font-size:.68rem;font-weight:650;opacity:.72}
@@ -232,6 +235,21 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:18px 0 8px;font-
 footer a{color:inherit}
 @media (max-width:640px){ .target{font-size:1.25rem} .site-header h1{font-size:1.1rem} .clock{font-size:2rem} }
 @media print{ body{background:#fff} .noprint{display:none!important} .panel{border:none;padding:0} .tabs{display:none} .view{display:block!important} }
+
+/* Layout switcher. The one control that changes what every keycap means. */
+.layoutbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 14px;
+  padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--panel)}
+.lb-label{font-size:.74rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--rj);white-space:nowrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.segbtn{font:inherit;font-size:.88rem;padding:7px 15px;border:0;background:transparent;
+  color:inherit;cursor:pointer;white-space:nowrap}
+.segbtn+.segbtn{border-left:1px solid var(--line)}
+.segbtn:hover{background:rgba(128,128,128,.12)}
+.segbtn.on{background:var(--rj);color:#fff;font-weight:650}
+.segbtn.on:hover{background:var(--rj)}
+.lb-note{font-size:.8rem;opacity:.7;line-height:1.35}
+@media (max-width:560px){ .layoutbar{gap:8px} .lb-note{flex-basis:100%} }
 </style>
 </head>
 <body>
@@ -241,12 +259,21 @@ footer a{color:inherit}
     <img class="rj-mark" src="data:image/png;base64,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" alt="Regis Jesuit">
     <div class="hdr-txt">
       <h1>Raider Teclado</h1>
-      <div class="sub">Type Spanish on a US keyboard &mdash; Windows <strong>Spanish (Latin America)</strong> layout</div>
+      <div class="sub" id="subLine">Type Spanish on a US keyboard</div>
     </div>
     <label class="who noprint">Name
       <input id="student" type="text" placeholder="Your name" autocomplete="name" spellcheck="false">
     </label>
   </header>
+
+  <div class="layoutbar noprint">
+    <span class="lb-label">Your keyboard layout</span>
+    <div class="seg" role="group" aria-label="Keyboard layout">
+      <button class="segbtn" type="button" data-lay="intl">US-International</button>
+      <button class="segbtn" type="button" data-lay="es">Spanish (Latin America)</button>
+    </div>
+    <span class="lb-note" id="layNote"></span>
+  </div>
 
   <div class="tabs noprint" role="tablist">
     <button class="tab" id="t-practice"  role="tab" aria-selected="true"  data-v="practice">Practice</button>
@@ -261,10 +288,9 @@ footer a{color:inherit}
 
     <section class="panel noprint" id="layoutCheck">
       <h3>First &middot; check your keyboard</h3>
-      <p class="small">Your keys are printed in English, but Windows can send Spanish characters instead.
-      Switch with <kbd>Windows</kbd> <span class="plus">+</span> <kbd>Space</kbd> &mdash; the box by the clock should read <strong>ESP</strong>.</p>
+      <p class="small" id="checkIntro"></p>
       <div class="box">
-        <div class="small"><strong>Test it:</strong> click the box and press the key just right of <kbd>L</kbd>.</div>
+        <div class="small" id="checkAsk"></div>
         <input class="probe" id="probe" maxlength="1" spellcheck="false" autocomplete="off" aria-label="Keyboard layout test">
         <button id="probeAgain" type="button">Clear</button>
       </div>
@@ -331,6 +357,7 @@ footer a{color:inherit}
         <span><i class="swatch" style="background:rgba(193,20,48,.18);border-color:var(--red)"></i> hold this</span>
         <span><i class="swatch" style="outline:2px dashed var(--warn);outline-offset:-3px"></i> accent key &mdash; nothing appears until the next key</span>
         <span>small grey letter = what is printed on your keycap</span>
+        <span>small <strong style="color:var(--rj)">red</strong> letter in the corner = hold <kbd>Alt Gr</kbd> for it</span>
       </div>
     </section>
   </div>
@@ -427,7 +454,7 @@ footer a{color:inherit}
       <p class="small">There is no server and no sign-in, so scores do not gather themselves.
       Have students paste their <strong>score code</strong> into a Canvas assignment or a Teams message,
       then paste the whole pile in here. One code per line; extra text around them is ignored.</p>
-      <textarea id="boardIn" style="min-height:130px" placeholder="RT1~Ana Ruiz~0918~42~214~97~1580~K3D9F2&#10;RT1~Marco Díaz~0918~38~191~99~1490~P8X1B7"></textarea>
+      <textarea id="boardIn" style="min-height:130px" placeholder="RT1~Ana Ruiz~0922~42~214~97~1580~K3D9F2&#10;RT1~Marco Díaz~0922~38~191~99~1490~P8X1B7"></textarea>
       <div class="row" style="margin-top:10px">
         <button id="boardGo" class="primary" type="button">Build leaderboard</button>
         <label class="small muted">Rank by
@@ -459,8 +486,9 @@ footer a{color:inherit}
   <!-- =================== CHEAT SHEET =================== -->
   <div class="view" id="v-cheat">
     <section class="panel">
-      <h3>Shortcut sheet &middot; Spanish (Latin America) on a US keyboard</h3>
-      <p class="small muted">The same shortcuts as the sheet your teacher hands out, plus the few it leaves off.</p>
+      <h3 id="cheatHead">Shortcut sheet</h3>
+      <p class="small muted">Every Spanish character, and how to reach it on the layout you picked above.
+      Switch layouts at the top of the page and this table changes with it.</p>
       <table>
         <thead><tr><th>You want</th><th>Press</th><th>Note</th></tr></thead>
         <tbody id="cheat"></tbody>
@@ -468,11 +496,10 @@ footer a{color:inherit}
     </section>
     <section class="panel">
       <h3>Turning the layout on</h3>
-      <p class="small"><strong>Switch between English and Spanish:</strong> <kbd>Windows</kbd> + <kbd>Space</kbd>.
-      The indicator by the clock flips between <strong>ENG</strong> and <strong>ESP</strong>.</p>
-      <p class="small"><strong>The accent key does nothing at first &mdash; that is correct.</strong>
-      <kbd>[</kbd> sends <kbd>&acute;</kbd> and waits. The accent appears when you press the vowel.
-      To type a bare <kbd>&acute;</kbd>, press <kbd>[</kbd> then <kbd>Space</kbd>.</p>
+      <p class="small" id="turnOn"></p>
+      <p class="small"><strong>A dead key does nothing at first &mdash; that is correct.</strong>
+      It sends an accent and waits. The accented letter appears when you press the vowel.
+      To type the bare accent mark, press the dead key then <kbd>Space</kbd>.</p>
       <div id="installHost2"></div>
     </section>
   </div>
@@ -494,45 +521,21 @@ footer a{color:inherit}
 (function(){
 "use strict";
 
-/* ---------- 1. LAYOUT ----------------------------------------------------
-   [event.code, printed US legend, unshifted, shifted, altgr, flags]        */
-var ROWS = [
-  [
-    ["Backquote","`","|","°","¬"],
-    ["Digit1","1","1","!"], ["Digit2","2","2","\""], ["Digit3","3","3","#"],
-    ["Digit4","4","4","$"], ["Digit5","5","5","%"],  ["Digit6","6","6","&"],
-    ["Digit7","7","7","/"], ["Digit8","8","8","("],  ["Digit9","9","9",")"],
-    ["Digit0","0","0","="],
-    ["Minus","-","'","?","\\"],
-    ["Equal","=","¿","¡"],
-    ["Backspace","","← Bksp","","","wider mod"]
-  ],
-  [
-    ["Tab","","Tab","","","wide mod"],
-    ["KeyQ","Q","q","Q","@"], ["KeyW","W","w","W"], ["KeyE","E","e","E"],
-    ["KeyR","R","r","R"], ["KeyT","T","t","T"], ["KeyY","Y","y","Y"],
-    ["KeyU","U","u","U"], ["KeyI","I","i","I"], ["KeyO","O","o","O"], ["KeyP","P","p","P"],
-    ["BracketLeft","[","´","¨","^","dead"],
-    ["BracketRight","]","+","*","~"],
-    ["Backslash","\\","}","]"]
-  ],
-  [
-    ["CapsLock","","Caps","","","wide mod"],
-    ["KeyA","A","a","A"], ["KeyS","S","s","S"], ["KeyD","D","d","D"],
-    ["KeyF","F","f","F"], ["KeyG","G","g","G"], ["KeyH","H","h","H"],
-    ["KeyJ","J","j","J"], ["KeyK","K","k","K"], ["KeyL","L","l","L"],
-    ["Semicolon",";","ñ","Ñ"],
-    ["Quote","'","{","["],
-    ["Enter","","Enter","","","wider mod"]
-  ],
-  [
-    ["ShiftLeft","","Shift","","","wider mod"],
-    ["KeyZ","Z","z","Z"], ["KeyX","X","x","X"], ["KeyC","C","c","C"],
-    ["KeyV","V","v","V"], ["KeyB","B","b","B"], ["KeyN","N","n","N"], ["KeyM","M","m","M"],
-    ["Comma",",",",",";"], ["Period",".",".",":"], ["Slash","/","-","_"],
-    ["ShiftRight","","Shift","","","wider mod"]
-  ],
-  [
+/* ---------- 1. LAYOUTS ---------------------------------------------------
+   Two layouts, one engine. A key is
+     [event.code, printed US legend, base, shift, altgr, flags, deadStates]
+   deadStates names which outputs are DEAD keys: "b" base, "s" shift, "a" altgr.
+   Mappings taken from the Windows layout drivers themselves (kbdla.dll and
+   kbdusx.dll, via kbdlayout.info's KLC/XML exports), not from memory.      */
+
+var MODS = {
+  bksp:["Backspace","","\u2190 Bksp","","","wider mod"],
+  tab:["Tab","","Tab","","","wide mod"],
+  caps:["CapsLock","","Caps","","","wide mod"],
+  enter:["Enter","","Enter","","","wider mod"],
+  lsh:["ShiftLeft","","Shift","","","wider mod"],
+  rsh:["ShiftRight","","Shift","","","wider mod"],
+  row5:[
     ["ControlLeft","","Ctrl","","","wide mod"],
     ["MetaLeft","","Win","","","wide mod"],
     ["AltLeft","","Alt","","","wide mod"],
@@ -540,37 +543,221 @@ var ROWS = [
     ["AltRight","","Alt Gr","","","wide mod"],
     ["ControlRight","","Ctrl","","","wide mod"]
   ]
-];
-var ACUTE = {a:"á",e:"é",i:"í",o:"ó",u:"ú",
-             A:"Á",E:"É",I:"Í",O:"Ó",U:"Ú"};
-var DIAER = {a:"ä",e:"ë",i:"ï",o:"ö",u:"ü",
-             A:"Ä",E:"Ë",I:"Ï",O:"Ö",U:"Ü"};
-var SPECIAL = "áéíóúüñ¿¡" +
-              "ÁÉÍÓÚÜÑ";
+};
 
-var HOW = {};
-(function buildHow(){
-  ROWS.forEach(function(row){ row.forEach(function(k){
-    var code=k[0], base=k[2], shift=k[3], alt=k[4], flags=k[5]||"";
-    if(code==="Space"){ HOW[" "]=[{code:"Space",label:"space"}]; return; }
-    if(flags.indexOf("mod")>-1 || flags.indexOf("dead")>-1) return;
-    if(base && base.length===1 && !(base in HOW)) HOW[base]=[{code:code,label:base}];
-    if(shift && shift.length===1 && !(shift in HOW)) HOW[shift]=[{code:code,label:shift,shift:true}];
-    if(alt && alt.length===1 && !(alt in HOW)) HOW[alt]=[{code:code,label:alt,alt:true}];
-  });});
-  Object.keys(ACUTE).forEach(function(b){
-    HOW[ACUTE[b]] = [{code:"BracketLeft",label:"´",dead:true},
-                     {code:"Key"+b.toUpperCase(),label:b,shift:(b===b.toUpperCase())}];
-  });
-  Object.keys(DIAER).forEach(function(b){
-    HOW[DIAER[b]] = [{code:"BracketLeft",label:"¨",shift:true,dead:true},
-                     {code:"Key"+b.toUpperCase(),label:b,shift:(b===b.toUpperCase())}];
-  });
-  for(var i=65;i<=90;i++){ var ch=String.fromCharCode(i); HOW[ch]=[{code:"Key"+ch,label:ch,shift:true}]; }
-  HOW["Ñ"]=[{code:"Semicolon",label:"Ñ",shift:true}];
-})();
+function deadTable(pairs){
+  var o={}, i;
+  for(i=0;i<pairs.length;i+=2) o[pairs[i]]=pairs[i+1];
+  return o;
+}
+var T_ACUTE = deadTable(["a","\u00e1","e","\u00e9","i","\u00ed","o","\u00f3","u","\u00fa",
+                         "A","\u00c1","E","\u00c9","I","\u00cd","O","\u00d3","U","\u00da"]);
+var T_DIAER = deadTable(["a","\u00e4","e","\u00eb","i","\u00ef","o","\u00f6","u","\u00fc",
+                         "A","\u00c4","E","\u00cb","I","\u00cf","O","\u00d6","U","\u00dc"]);
+var T_TILDE = deadTable(["a","\u00e3","n","\u00f1","o","\u00f5","A","\u00c3","N","\u00d1","O","\u00d5"]);
+var T_GRAVE = deadTable(["a","\u00e0","e","\u00e8","i","\u00ec","o","\u00f2","u","\u00f9",
+                         "A","\u00c0","E","\u00c8","I","\u00cc","O","\u00d2","U","\u00d9"]);
+var T_CIRC  = deadTable(["a","\u00e2","e","\u00ea","i","\u00ee","o","\u00f4","u","\u00fb",
+                         "A","\u00c2","E","\u00ca","I","\u00ce","O","\u00d4","U","\u00db"]);
 
-/* ---------- 2. CONTENT ---------------------------------------------------- */
+var LAYOUTS = {
+
+/* ===== United States-International =======================================
+   The school standard. US keycaps tell the truth; the apostrophe, quote,
+   backtick, tilde and caret become accent keys that wait for the next
+   letter. Accents come from the keyboard itself, which is the whole point
+   inside LockDown Browser.                                                */
+intl: {
+  id:"intl",
+  name:"US-International",
+  full:"United States-International",
+  indicator:"ENG",
+  blurb:"Your keys still say what they do. The apostrophe and quote keys become accent keys.",
+  ROWS: [
+    [
+      ["Backquote","`","`","~","","","bs"],
+      ["Digit1","1","1","!","\u00a1"], ["Digit2","2","2","@","\u00b2"],
+      ["Digit3","3","3","#","\u00b3"], ["Digit4","4","4","$","\u00a4"],
+      ["Digit5","5","5","%","\u20ac"], ["Digit6","6","6","^","\u00bc","","s"],
+      ["Digit7","7","7","&","\u00bd"], ["Digit8","8","8","*","\u00be"],
+      ["Digit9","9","9","(","\u2018"], ["Digit0","0","0",")","\u2019"],
+      ["Minus","-","-","_","\u00a5"], ["Equal","=","=","+","\u00d7"],
+      MODS.bksp
+    ],
+    [
+      MODS.tab,
+      ["KeyQ","Q","q","Q","\u00e4"], ["KeyW","W","w","W","\u00e5"],
+      ["KeyE","E","e","E","\u00e9"], ["KeyR","R","r","R"],
+      ["KeyT","T","t","T","\u00fe"], ["KeyY","Y","y","Y","\u00fc"],
+      ["KeyU","U","u","U","\u00fa"], ["KeyI","I","i","I","\u00ed"],
+      ["KeyO","O","o","O","\u00f3"], ["KeyP","P","p","P","\u00f6"],
+      ["BracketLeft","[","[","{","\u00ab"],
+      ["BracketRight","]","]","}","\u00bb"],
+      ["Backslash","\\","\\","|","\u00ac"]
+    ],
+    [
+      MODS.caps,
+      ["KeyA","A","a","A","\u00e1"], ["KeyS","S","s","S","\u00df"],
+      ["KeyD","D","d","D","\u00f0"], ["KeyF","F","f","F"],
+      ["KeyG","G","g","G"], ["KeyH","H","h","H"],
+      ["KeyJ","J","j","J"], ["KeyK","K","k","K"],
+      ["KeyL","L","l","L","\u00f8"],
+      ["Semicolon",";",";",":"],
+      ["Quote","'","'","\"","\u00b4","","bs"],
+      MODS.enter
+    ],
+    [
+      MODS.lsh,
+      ["KeyZ","Z","z","Z","\u00e6"], ["KeyX","X","x","X"],
+      ["KeyC","C","c","C","\u00a9"], ["KeyV","V","v","V"],
+      ["KeyB","B","b","B"], ["KeyN","N","n","N","\u00f1"],
+      ["KeyM","M","m","M"],
+      ["Comma",",",",","<","\u00e7"],
+      ["Period",".",".",">"],
+      ["Slash","/","/","?","\u00bf"],
+      MODS.rsh
+    ],
+    MODS.row5
+  ],
+  /* One rule for every accent: the accent key waits, then the letter. The
+     Alt Gr singles are real and faster, and they are on the cheat sheet,
+     but teaching one mechanism beats teaching two. */
+  deadFirst: true,
+  DEAD: { "'":T_ACUTE, "\"":T_DIAER, "`":T_GRAVE, "^":T_CIRC, "~":T_TILDE },
+  probe: {
+    ask:"press the apostrophe key <kbd>'</kbd>, then <kbd>e</kbd>",
+    want:"\u00e9",
+    wrong:"'",
+    wrongMsg:"That gave a plain apostrophe, so you are still on ordinary US English. " +
+             "US-International turns <kbd>'</kbd> into an accent key.",
+    okMsg:"<strong>US-International is on.</strong> The apostrophe became an accent. Pick a drill below."
+  },
+  addName:"United States-International",
+  addNote:"It appears in the keyboard list under <strong>English (United States)</strong>, " +
+          "spelled <strong>United States-International</strong>."
+},
+
+/* ===== Spanish (Latin America) ===========================================
+   The layout Sra. Dom\u00ednguez's class sheet teaches. US keycaps lie: the
+   printed letters are not what the key sends.                             */
+es: {
+  id:"es",
+  name:"Spanish (Latin America)",
+  full:"Spanish (Latin America)",
+  indicator:"ESP",
+  blurb:"Your keycaps lie. \u00f1 gets its own key and the punctuation moves.",
+  ROWS: [
+    [
+      ["Backquote","`","|","\u00b0","\u00ac"],
+      ["Digit1","1","1","!"], ["Digit2","2","2","\""], ["Digit3","3","3","#"],
+      ["Digit4","4","4","$"], ["Digit5","5","5","%"],  ["Digit6","6","6","&"],
+      ["Digit7","7","7","/"], ["Digit8","8","8","("],  ["Digit9","9","9",")"],
+      ["Digit0","0","0","="],
+      ["Minus","-","'","?","\\"],
+      ["Equal","=","\u00bf","\u00a1"],
+      MODS.bksp
+    ],
+    [
+      MODS.tab,
+      ["KeyQ","Q","q","Q","@"], ["KeyW","W","w","W"], ["KeyE","E","e","E"],
+      ["KeyR","R","r","R"], ["KeyT","T","t","T"], ["KeyY","Y","y","Y"],
+      ["KeyU","U","u","U"], ["KeyI","I","i","I"], ["KeyO","O","o","O"], ["KeyP","P","p","P"],
+      ["BracketLeft","[","\u00b4","\u00a8","^","","bs"],
+      ["BracketRight","]","+","*","~"],
+      ["Backslash","\\","}","]"]
+    ],
+    [
+      MODS.caps,
+      ["KeyA","A","a","A"], ["KeyS","S","s","S"], ["KeyD","D","d","D"],
+      ["KeyF","F","f","F"], ["KeyG","G","g","G"], ["KeyH","H","h","H"],
+      ["KeyJ","J","j","J"], ["KeyK","K","k","K"], ["KeyL","L","l","L"],
+      ["Semicolon",";","\u00f1","\u00d1"],
+      ["Quote","'","{","["],
+      MODS.enter
+    ],
+    [
+      MODS.lsh,
+      ["KeyZ","Z","z","Z"], ["KeyX","X","x","X"], ["KeyC","C","c","C"],
+      ["KeyV","V","v","V"], ["KeyB","B","b","B"], ["KeyN","N","n","N"], ["KeyM","M","m","M"],
+      ["Comma",",",",",";"], ["Period",".",".",":"], ["Slash","/","-","_"],
+      MODS.rsh
+    ],
+    MODS.row5
+  ],
+  deadFirst: false,
+  DEAD: { "\u00b4":T_ACUTE, "\u00a8":T_DIAER },
+  probe: {
+    ask:"press the key just right of <kbd>L</kbd>",
+    want:"\u00f1",
+    wrong:";",
+    wrongMsg:"That gave <kbd>;</kbd>, which is the English layout. On this layout that key is <strong>\u00f1</strong>.",
+    okMsg:"<strong>Spanish layout is on.</strong> That key gives \u00f1. Pick a drill below."
+  },
+  addName:"Latin American",
+  addNote:"Pick <strong>Latin American</strong> \u2014 it is the layout this class teaches."
+}
+};
+
+var L = null, ROWS = null, HOW = {}, DEADROUTE = {};
+
+function buildHow(layout){
+  var how = {}, deadRoute = {};
+  function put(ch, steps){ if(ch && ch.length===1 && !(ch in how)) how[ch]=steps; }
+
+  function walk(fn){
+    layout.ROWS.forEach(function(row){ row.forEach(function(k){
+      var flags=k[5]||"";
+      if(flags.indexOf("mod")>-1) return;
+      fn(k[0], k[2], k[3], k[4], k[6]||"");
+    });});
+  }
+
+  walk(function(code, base, shift, alt, dead){
+    if(dead.indexOf("b")>-1 && base) deadRoute[base] = {code:code,label:base,dead:true};
+    if(dead.indexOf("s")>-1 && shift) deadRoute[shift] = {code:code,label:shift,shift:true,dead:true};
+    if(dead.indexOf("a")>-1 && alt)   deadRoute[alt]   = {code:code,label:alt,alt:true,dead:true};
+  });
+
+  function addSingles(){
+    walk(function(code, base, shift, alt, dead){
+      if(code==="Space"){ put(" ",[{code:"Space",label:"space"}]); return; }
+      if(base && dead.indexOf("b")===-1) put(base, [{code:code,label:base}]);
+      if(shift && dead.indexOf("s")===-1) put(shift, [{code:code,label:shift,shift:true}]);
+      if(alt && dead.indexOf("a")===-1) put(alt, [{code:code,label:alt,alt:true}]);
+    });
+  }
+  function addCompositions(force){
+    Object.keys(layout.DEAD).forEach(function(dk){
+      var route = deadRoute[dk]; if(!route) return;
+      var table = layout.DEAD[dk];
+      Object.keys(table).forEach(function(b){
+        var letter = how[b]; if(!letter) return;
+        if(force) how[table[b]] = [route, letter[0]];
+        else put(table[b], [route, letter[0]]);
+      });
+    });
+  }
+
+  addSingles();
+  addCompositions(!!layout.deadFirst);
+
+  /* A bare accent mark: press the dead key, then Space. Only if no single
+     key already produces it. */
+  Object.keys(layout.DEAD).forEach(function(dk){
+    var r = deadRoute[dk];
+    if(r && !(dk in how)) how[dk] = [r, {code:"Space",label:"space"}];
+  });
+  how[" "] = [{code:"Space",label:"space"}];
+  for(var i=97;i<=122;i++){
+    var lo = String.fromCharCode(i), up = lo.toUpperCase();
+    if(!(up in how) && how[lo]) how[up] = [{code:how[lo][0].code, label:up, shift:true}];
+  }
+  return { how:how, deadRoute:deadRoute };
+}
+
+/* ---------- 2. CONTENT ----------------------------------------------------
+   Same Spanish on both layouts. Only the route to each character changes. */
+
 var ENYE  = ["año","niño","uña","leña","caña","seña","mañana","señor",
   "señora","pequeño","compañero","España","español","otoño","cumpleaños",
   "enseñar","montaña","baño","sueño","dueño","niña","araña"];
@@ -578,7 +765,7 @@ var ACCW = ["mamá","papá","café","bebé","sí","aquí","día","música",
   "lápiz","árbol","fácil","difícil","canción","televisión","lección",
   "atención","también","después","adiós","jardín","número","médico",
   "pájaro","sábado","miércoles","teléfono","camión","jamón","ratón",
-  "corazón","periódico","matemáticas","rápido","último","inglés","mazán",
+  "corazón","periódico","matemáticas","rápido","último","inglés",
   "pingüino","vergüenza","bilingüe","antigüedad"];
 var SENT = [
   "Mi compañero de clase se llama Joaquín Fernández.",
@@ -592,12 +779,111 @@ var SENT = [
   "¡Feliz cumpleaños! ¿Cuántos años cumples?",
   "El desierto de Atacama es el más seco del mundo."
 ];
-ACCW = ACCW.filter(function(w){ return w!=="mazán"; });
 
-/* Where the ENG/ESP indicator actually sits - the thing students cannot find. */
-var TASKBAR_SVG =
- '<div class="fig"><svg viewBox="0 0 440 96" role="img" width="440"'
- + ' aria-label="The Windows taskbar, with the language button reading ESP to the left of the clock">'
+var ACCENTED = "áéíóúüñ¿¡ÁÉÍÓÚÜÑ";
+var SPECIAL = ACCENTED;
+/* Deliberately no tilde here: stripping it turns año into ano. */
+var STRIP = {"á":"a","é":"e","í":"i","ó":"o","ú":"u","ü":"u",
+             "Á":"A","É":"E","Í":"I","Ó":"O","Ú":"U","Ü":"U"};
+
+var LEVELS = [
+  { id:"l1", name:"1 · The ñ", tag:"Eñe",
+    prompt:{
+      es:"ñ is a key of its own — the one printed <kbd>;</kbd> on your keyboard. No accent key needed.",
+      intl:"Press <kbd>Shift</kbd>+<kbd>`</kbd> to send <kbd>~</kbd>. Nothing appears. Then press <kbd>n</kbd>."
+    },
+    lines:["ñ ñ ñ ñ ñ ñ ñ ñ",
+           "año niño uña leña seña caña",
+           "mañana señor pequeño compañero",
+           "España otoño cumpleaños enseñar",
+           "El niño pequeño cumple años mañana."] },
+
+  { id:"l2", name:"2 · The accent", tag:"á é í ó ú",
+    prompt:{
+      es:"Press <kbd>´</kbd> (the key printed <kbd>[</kbd>). Nothing appears. Then press the vowel.",
+      intl:"Press <kbd>'</kbd> (the apostrophe). Nothing appears. Then press the vowel."
+    },
+    lines:["á é í ó ú á é í ó ú",
+           "mamá papá café bebé sí aquí",
+           "día música lápiz árbol fácil",
+           "canción televisión lección atención",
+           "Mi mamá toma café y escucha música."] },
+
+  { id:"l3", name:"3 · ¿ and ¡", tag:"Openers",
+    prompt:{
+      es:"¿ sits on the key printed <kbd>=</kbd>. Hold <kbd>Shift</kbd> on that same key for ¡.",
+      intl:"¿ is <kbd>Alt Gr</kbd> + <kbd>/</kbd>. ¡ is <kbd>Alt Gr</kbd> + <kbd>1</kbd>. No accent key involved."
+    },
+    lines:["¿ ¡ ¿ ¡ ¿ ¡ ¿ ¡",
+           "¿Qué? ¿Quién? ¿Dónde? ¿Cuándo? ¿Por qué?",
+           "¡Hola! ¡Claro! ¡Qué bien! ¡Buen viaje!",
+           "¿Cómo te llamas? ¿De dónde eres?",
+           "¡Qué sorpresa! ¿Cuántos años tienes?"] },
+
+  { id:"l4", name:"4 · The ü", tag:"Diaeresis",
+    prompt:{
+      es:"<kbd>Shift</kbd> + the <kbd>´</kbd> key gives <kbd>¨</kbd>. Nothing appears — then press <kbd>u</kbd>.",
+      intl:"<kbd>Shift</kbd> + <kbd>'</kbd> gives <kbd>\"</kbd> as a diaeresis. Nothing appears — then press <kbd>u</kbd>."
+    },
+    lines:["ü ü ü ü ü ü",
+           "pingüino vergüenza bilingüe",
+           "lingüística antigüedad averigüe",
+           "El pingüino bilingüe no siente vergüenza."] },
+
+  { id:"l5", name:"5 · The rest of the keyboard", tag:"Where it bites",
+    prompt:{
+      es:"The Spanish layout moves these. The apostrophe and <kbd>?</kbd> share the key printed <kbd>-</kbd>.",
+      intl:"Punctuation stays put — but <kbd>'</kbd> and <kbd>\"</kbd> now wait for a letter. Press <kbd>Space</kbd> after them to get the plain mark."
+    },
+    lines:{
+      es:["' ? ' ? , ; . : - _",
+          "¿Qué pasa? No sé. ¡Vamos!",
+          "María: ¿vienes? Juan: sí, claro.",
+          "el señor, la señora; los niños, las niñas",
+          "¿Qué día es hoy? Hoy es miércoles."],
+      intl:["don't can't it's we'll I'm",
+            "\"Hola\" \"Adiós\" \"¿Qué tal?\"",
+            "María: ¿vienes? Juan: sí, claro.",
+            "el señor, la señora; los niños, las niñas",
+            "¿Qué día es hoy? Hoy es miércoles."]
+    } },
+
+  { id:"l6", name:"6 · Full sentences", tag:"Everything",
+    prompt:{ es:"All of it together, at the pace of real writing.",
+             intl:"All of it together, at the pace of real writing." },
+    lines:SENT.slice(0,6) },
+
+  { id:"l7", name:"7 · Accent practice", tag:"Where does it go?",
+    prompt:{
+      es:"The word appears without its accents. Type it correctly — you decide where the tilde belongs.",
+      intl:"The word appears without its accents. Type it correctly — you decide where the tilde belongs."
+    },
+    accent:true, lines:ACCW.slice() }
+];
+
+var BADGES = [
+  {id:"first", n:"Primer paso",    d:"Finish any drill.",                      t:function(s){ return countBest(s)>=1; }},
+  {id:"enye",  n:"Mañoso",    d:"Type 100 ñ without a miss.",        t:function(s){ return (s.cleanChars["ñ"]||0)>=100; }},
+  {id:"acc",   n:"Acentuado",      d:"Type 250 accented vowels.",              t:function(s){ return accentTotal(s)>=250; }},
+  {id:"perf",  n:"Sin errores",    d:"Finish a drill at 100% accuracy.",       t:function(s){ return s.perfectDrills>=1; }},
+  {id:"w25",   n:"25 wpm",         d:"Hit 25 words per minute in a sprint.",   t:function(s){ return (s.sprintBest.wpm||0)>=25; }},
+  {id:"w40",   n:"40 wpm",         d:"Hit 40 words per minute in a sprint.",   t:function(s){ return (s.sprintBest.wpm||0)>=40; }},
+  {id:"c200",  n:"200 lpm",        d:"Hit 200 letters per minute in a sprint.",t:function(s){ return (s.sprintBest.cpm||0)>=200; }},
+  {id:"combo", n:"Racha de 50",    d:"Reach a 50-character clean streak.",     t:function(s){ return (s.bestStreak||0)>=50; }},
+  {id:"all",   n:"Todo el teclado",d:"Finish all seven drills.",               t:function(s){ return countBest(s)>=7; }},
+  {id:"k2000", n:"2.000 puntos",   d:"Score 2,000 points in one sprint.",      t:function(s){ return (s.sprintBest.points||0)>=2000; }}
+];
+function countBest(s){ var n=0; LEVELS.forEach(function(l){ if(s.best[l.id]) n++; }); return n; }
+function accentTotal(s){
+  var n=0, k="áéíóúü";
+  for(var i=0;i<k.length;i++) n += (s.cleanChars[k[i]]||0);
+  return n;
+}
+
+/* ---------- 2b. CHEAT SHEET + SETUP, PER LAYOUT --------------------------- */
+function taskbarSvg(ind){
+  return '<div class="fig"><svg viewBox="0 0 440 96" role="img" width="440"'
+ + ' aria-label="The Windows taskbar, with the language button to the left of the clock">'
  + '<rect x="0" y="34" width="440" height="40" rx="7" fill="rgba(128,128,128,.16)"'
  + ' stroke="rgba(128,128,128,.34)"/>'
  + '<g fill="currentColor" opacity=".38">'
@@ -609,173 +895,136 @@ var TASKBAR_SVG =
  + '<rect x="318" y="49" width="11" height="10" rx="2"/></g>'
  + '<rect x="338" y="41" width="40" height="26" rx="6" fill="#C11430"/>'
  + '<text x="358" y="58" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"'
- + ' font-size="13" font-weight="700" fill="#ffffff">ESP</text>'
+ + ' font-size="13" font-weight="700" fill="#ffffff">'+ind+'</text>'
  + '<text x="404" y="58" text-anchor="middle" font-family="Segoe UI, system-ui, sans-serif"'
  + ' font-size="12" fill="currentColor" opacity=".7">9:41</text>'
  + '<path d="M358 88 L358 74 M352 80 L358 74 L364 80" stroke="#C11430" stroke-width="2.2"'
  + ' fill="none" stroke-linecap="round" stroke-linejoin="round"/>'
  + '</svg>'
  + '<div class="figcap">Bottom-right of your screen. Click it, or press '
- + '<kbd>Windows</kbd> + <kbd>Space</kbd>, to flip between <strong>ENG</strong> and <strong>ESP</strong>.</div>'
- + '</div>';
+ + '<kbd>Windows</kbd> + <kbd>Space</kbd>, to switch.</div></div>';
+}
 
-var LEVELS = [
-  { id:"l1", name:"1 · The ñ key", tag:"Right of L",
-    prompt:"ñ is a key of its own — the one printed ; on your keyboard. No accent key needed.",
-    lines:["ñ ñ ñ ñ ñ ñ ñ ñ",
-           "año niño uña leña seña caña",
-           "mañana señor pequeño compañero",
-           "España otoño cumpleaños enseñar",
-           "El niño pequeño cumple años mañana."] },
-  { id:"l2", name:"2 · The accent key", tag:"á é í ó ú",
-    prompt:"Press ´ (the key printed [ ). Nothing appears. Then press the vowel.",
-    lines:["á é í ó ú á é í ó ú",
-           "mamá papá café bebé sí aquí",
-           "día música lápiz árbol fácil",
-           "canción televisión lección atención",
-           "Mi mamá toma café y escucha música."] },
-  { id:"l3", name:"3 · ¿ and ¡", tag:"Openers",
-    prompt:"¿ sits on the key printed = . Hold Shift on that same key for ¡.",
-    lines:["¿ ¡ ¿ ¡ ¿ ¡ ¿ ¡",
-           "¿Qué? ¿Quién? ¿Dónde? ¿Cuándo? ¿Por qué?",
-           "¡Hola! ¡Claro! ¡Qué bien! ¡Buen viaje!",
-           "¿Cómo te llamas? ¿De dónde eres?",
-           "¡Qué sorpresa! ¿Cuántos años tienes?"] },
-  { id:"l4", name:"4 · The ü", tag:"Diaeresis",
-    prompt:"Shift + the ´ key gives ¨. Nothing appears — then press u.",
-    lines:["ü ü ü ü ü ü",
-           "pingüino vergüenza bilingüe",
-           "lingüística antigüedad averigüe",
-           "El pingüino bilingüe no siente vergüenza."] },
-  { id:"l5", name:"5 · Moved punctuation", tag:"' ? : ; @",
-    prompt:"The Spanish layout moves these. The apostrophe and ? share the key printed - .",
-    lines:["' ? ' ? , ; . : - _",
-           "¿Qué pasa? No sé. ¡Vamos!",
-           "María: ¿vienes? Juan: sí, claro.",
-           "el señor, la señora; los niños, las niñas",
-           "¿Qué día es hoy? Hoy es miércoles."] },
-  { id:"l6", name:"6 · Full sentences", tag:"Everything",
-    prompt:"All of it together, at the pace of real writing.", lines:SENT.slice(0,6) },
-  { id:"l7", name:"7 · Accent practice", tag:"Where does it go?",
-    prompt:"The word appears without its accents. Type it correctly — you decide where the tilde belongs.",
-    accent:true, lines:ACCW.slice() }
-];
-
-var CHEAT = [
-  ["ñ / Ñ","the key printed <kbd>;</kbd> (Shift for Ñ)","Its own key. No accent needed."],
-  ["á é í ó ú","<kbd>[</kbd> then the vowel","<kbd>[</kbd> sends ´. Nothing shows until you press the vowel."],
-  ["Á É Í Ó Ú","<kbd>[</kbd> then Shift + vowel",""],
-  ["ü","Shift + <kbd>[</kbd> then <kbd>u</kbd>","Shift + <kbd>[</kbd> sends ¨."],
-  ["´ by itself","<kbd>[</kbd> then <kbd>Space</kbd>","How you escape the accent key."],
+var CHEATS = {
+intl: [
+  ["á é í ó ú","<kbd>'</kbd> then the vowel",
+   "Nothing appears after <kbd>'</kbd> — that is correct. Shortcut: <kbd>Alt Gr</kbd> + the vowel."],
+  ["Á É Í Ó Ú","<kbd>'</kbd> then <kbd>Shift</kbd> + the vowel",
+   "Capitals work exactly like lowercase here."],
+  ["ñ","<kbd>Shift</kbd>+<kbd>`</kbd> (that is <kbd>~</kbd>) then <kbd>n</kbd>",
+   "Faster once you know it: <kbd>Alt Gr</kbd> + <kbd>n</kbd>."],
+  ["Ñ","<kbd>Shift</kbd>+<kbd>`</kbd> then <kbd>Shift</kbd>+<kbd>n</kbd>",
+   "Or <kbd>Shift</kbd> + <kbd>Alt Gr</kbd> + <kbd>n</kbd>."],
+  ["ü","<kbd>Shift</kbd>+<kbd>'</kbd> (that is <kbd>\"</kbd>) then <kbd>u</kbd>",
+   "Shortcut: <kbd>Alt Gr</kbd> + <kbd>y</kbd>."],
+  ["¿","<kbd>Alt Gr</kbd> + <kbd>/</kbd>","No accent key. One chord."],
+  ["¡","<kbd>Alt Gr</kbd> + <kbd>1</kbd>","No accent key. One chord."],
+  ["' by itself","<kbd>'</kbd> then <kbd>Space</kbd>",
+   "The apostrophe waits for a letter now. This is the change you will notice in English."],
+  ["\" by itself","<kbd>Shift</kbd>+<kbd>'</kbd> then <kbd>Space</kbd>",""],
+  ["` by itself","<kbd>`</kbd> then <kbd>Space</kbd>",""],
+  ["€","<kbd>Alt Gr</kbd> + <kbd>5</kbd>",""],
+  ["Everything else","exactly where it is printed",
+   "Letters, digits and punctuation do not move. Only <kbd>'</kbd> <kbd>\"</kbd> <kbd>`</kbd> <kbd>~</kbd> <kbd>^</kbd> change behaviour."],
+  ["Switch layouts","<kbd>Windows</kbd> + <kbd>Space</kbd>",
+   "Both English layouts show <strong>ENG</strong> by the clock, so click it to see which is ticked."]
+],
+es: [
+  ["ñ / Ñ","the key printed <kbd>;</kbd> (<kbd>Shift</kbd> for Ñ)","Its own key. No accent needed."],
+  ["á é í ó ú","the key printed <kbd>[</kbd> then the vowel",
+   "<kbd>[</kbd> sends ´. Nothing shows until you press the vowel."],
+  ["Á É Í Ó Ú","the key printed <kbd>[</kbd> then <kbd>Shift</kbd> + vowel",""],
+  ["ü","<kbd>Shift</kbd> + the key printed <kbd>[</kbd> then <kbd>u</kbd>","That sends ¨."],
+  ["´ by itself","the key printed <kbd>[</kbd> then <kbd>Space</kbd>","How you escape the accent key."],
   ["¿","the key printed <kbd>=</kbd>",""],
-  ["¡","Shift + the key printed <kbd>=</kbd>","Not on the class sheet — same key as ¿."],
-  ["@","<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>q</kbd>","Or <kbd>Alt Gr</kbd> + <kbd>q</kbd> — same thing."],
-  ["!","Shift + <kbd>1</kbd>",""],
-  ["\"","Shift + <kbd>2</kbd>","Not on the class sheet."],
-  ["#","Shift + <kbd>3</kbd>",""],
-  ["$","Shift + <kbd>4</kbd>",""],
-  ["%","Shift + <kbd>5</kbd>",""],
-  ["&amp;","Shift + <kbd>6</kbd>",""],
-  ["/","Shift + <kbd>7</kbd>",""],
-  ["(","Shift + <kbd>8</kbd>",""],
-  [")","Shift + <kbd>9</kbd>",""],
-  ["=","Shift + <kbd>0</kbd>",""],
-  ["?","Shift + the key printed <kbd>-</kbd>","Moved. It is no longer beside the right Shift."],
+  ["¡","<kbd>Shift</kbd> + the key printed <kbd>=</kbd>","Same key as ¿."],
+  ["@","<kbd>Alt Gr</kbd> + <kbd>q</kbd>","Or <kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>q</kbd> — same thing."],
+  ["!","<kbd>Shift</kbd> + <kbd>1</kbd>",""],
+  ["\"","<kbd>Shift</kbd> + <kbd>2</kbd>",""],
+  ["#","<kbd>Shift</kbd> + <kbd>3</kbd>",""],
+  ["$","<kbd>Shift</kbd> + <kbd>4</kbd>",""],
+  ["%","<kbd>Shift</kbd> + <kbd>5</kbd>",""],
+  ["&amp;","<kbd>Shift</kbd> + <kbd>6</kbd>",""],
+  ["/","<kbd>Shift</kbd> + <kbd>7</kbd>",""],
+  ["(","<kbd>Shift</kbd> + <kbd>8</kbd>",""],
+  [")","<kbd>Shift</kbd> + <kbd>9</kbd>",""],
+  ["=","<kbd>Shift</kbd> + <kbd>0</kbd>",""],
+  ["?","<kbd>Shift</kbd> + the key printed <kbd>-</kbd>","Moved. It is no longer beside the right Shift."],
   ["'","the key printed <kbd>-</kbd>",""],
-  [";","Shift + <kbd>,</kbd>",""],
-  [":","Shift + <kbd>.</kbd>",""],
+  [";","<kbd>Shift</kbd> + <kbd>,</kbd>",""],
+  [":","<kbd>Shift</kbd> + <kbd>.</kbd>",""],
   ["-","the key printed <kbd>/</kbd>",""],
-  ["Switch layouts","<kbd>Windows</kbd> + <kbd>Space</kbd>","Watch for ESP / ENG by the clock."]
-];
+  ["Switch layouts","<kbd>Windows</kbd> + <kbd>Space</kbd>","Watch for <strong>ESP</strong> / <strong>ENG</strong> by the clock."]
+]
+};
 
-/* The wrong turn students take: installing the whole Spanish language instead of the keyboard. */
-var LANGPACK_HTML =
- '<details>'
- + '<summary>Do I need the Spanish language pack too?</summary>'
- + '<p class="yesno"><b>No.</b> Adding the keyboard is all you need for this class, and it is the '
- + 'safer choice. Nothing downloads, nothing about your laptop changes, and your English typing, '
- + 'menus and files stay exactly as they are.</p>'
- + '<p class="small" style="margin-top:10px"><strong>If you install the full Spanish language anyway, '
- + 'here is what actually changes.</strong> None of it is harmful, and some of it is genuinely useful:</p>'
- + '<ul class="gives">'
- + '<li><strong>Spanish spellcheck and autocorrect</strong> in Edge and Windows apps. This is the one '
- + 'worth having &mdash; without it, a correctly accented Spanish paragraph gets underlined in red as '
- + 'though every word were misspelled English.</li>'
- + '<li><strong>Spanish voice typing and read-aloud</strong> &mdash; dictation that understands Spanish, '
- + 'and a Spanish voice reading text back instead of an English one mangling it.</li>'
- + '<li><strong>Handwriting recognition</strong>, if you write with a pen on a Surface.</li>'
- + '</ul>'
- + '<div class="warnbox"><strong>Two things that surprise people.</strong> Adding Spanish moves it to the '
- + 'top of your language list, and Windows uses that order to decide what language <em>websites and Store '
- + 'apps</em> show you &mdash; so pages may start appearing in Spanish even though you never asked for that. '
- + 'And if you also change the <strong>Windows display language</strong>, every menu, folder and dialog on '
- + 'the laptop turns Spanish until you change it back. Adding the language does not do this on its own; it '
- + 'is a separate switch, and you can leave it alone.</div>'
- + '<p class="undo"><strong>How to undo any of it:</strong> Settings <span class="arrow">&rsaquo;</span> '
- + 'Time &amp; language <span class="arrow">&rsaquo;</span> Language &amp; region, click the '
- + '<strong>&hellip;</strong> next to Spanish and choose <strong>Remove</strong>. If the menus went Spanish, '
- + 'first set <strong>Windows display language</strong> back to <strong>English (United States)</strong> and '
- + 'sign out and back in.</p>'
- + '<p class="small muted" style="margin-top:10px">Word and Outlook are separate &mdash; they do their own '
- + 'Spanish spellcheck through the Editor language settings inside Office, whether or not Windows has the '
- + 'language installed.</p>'
- + '</details>';
+function installHtml(lay){
+  var extra = lay.id==="intl"
+    ? '<div class="whybox"><p><strong>Why this is the school’s recommendation.</strong></p>'
+    + '<p>It is about <strong>LockDown Browser</strong> more than about Spanish. LDB is deliberately '
+    + 'restricted, and if the Canvas special-characters ribbon glitches there is often no mid-quiz '
+    + 'recovery. US-International makes accents native to the keyboard and completely independent of '
+    + 'Canvas, so they work the same way in a quiz, in Word, and in a browser.</p>'
+    + '<p>It also keeps your keycaps honest. Every letter, digit and punctuation mark stays exactly '
+    + 'where it is printed — only <kbd>\'</kbd> <kbd>"</kbd> <kbd>`</kbd> <kbd>~</kbd> and '
+    + '<kbd>^</kbd> change behaviour.</p></div>'
+    + '<div class="warnbox"><strong>The one thing to get used to.</strong> Those five keys now wait '
+    + 'for the next letter, so typing <em>don’t</em> in an English essay gives you <em>dont</em> '
+    + 'with a floating accent unless you press <kbd>Space</kbd> after the apostrophe. Drill 5 is '
+    + 'nothing but this. Most people adjust in a day.</div>'
+    : '<div class="whybox"><p><strong>Why choose this one?</strong></p>'
+    + '<p>It is the layout used across Spanish-speaking Latin America, and the one the class shortcut '
+    + 'sheet teaches, so the sheet, the board and your classmates’ screens all match. '
+    + '<strong>ñ</strong> gets a real key of its own rather than an accent-key combination.</p>'
+    + '<p>The cost is that your keycaps stop telling the truth: the punctuation moves, and you are '
+    + 'reading printed letters that are no longer what the key sends. The school’s general '
+    + 'recommendation is US-International, because it survives LockDown Browser without depending on '
+    + 'the Canvas ribbon. Both work — practise on whichever one you actually type on.</p></div>';
 
-/* One source of truth; rendered into both the Practice tab and the Shortcut sheet. */
-var INSTALL_HTML =
- '<details class="install">'
- + '<summary>I don\'t have the Spanish keyboard yet &mdash; how do I add it?</summary>'
+  return '<details class="install">'
+ + '<summary>I don’t have the ' + esc(lay.name) + ' keyboard yet &mdash; how do I add it?</summary>'
  + '<p class="small muted" style="margin-top:6px">About a minute. You are adding a <em>keyboard</em>, '
- + 'not turning your computer into Spanish &mdash; menus, files and English typing all stay exactly as they are, '
- + 'and nothing has to download. This works on a school laptop without an admin password.</p>'
+ + 'not turning your computer into Spanish &mdash; menus, files and English typing all stay exactly as '
+ + 'they are, and nothing has to download. This works on a school laptop without an admin password.</p>'
  + '<ol class="steps">'
- + '<li>Open <strong>Settings</strong>: click <strong>Start</strong> and choose <strong>Settings</strong>, '
- + 'or press <kbd>Windows</kbd> + <kbd>i</kbd>.</li>'
+ + '<li>Open <strong>Settings</strong>: press <kbd>Windows</kbd> + <kbd>i</kbd>.</li>'
  + '<li>Go to <span class="path">Time &amp; language<span class="arrow">&rsaquo;</span>Language &amp; region</span>.</li>'
- + '<li>Under <strong>Preferred languages</strong>, find <strong>English (United States)</strong> and click the '
- + '<strong>&hellip;</strong> (three dots) at the right of that row.</li>'
+ + '<li>Under <strong>Preferred languages</strong>, find <strong>English (United States)</strong> and '
+ + 'click the <strong>&hellip;</strong> at the right of that row.</li>'
  + '<li>Choose <strong>Language options</strong>.</li>'
- + '<li>Scroll down to <strong>Keyboards</strong> and click <strong>Add a keyboard</strong>.</li>'
- + '<li>Pick <strong>Latin American</strong> from the list. It is ready immediately &mdash; no restart.</li>'
- + '<li>Press <kbd>Windows</kbd> + <kbd>Space</kbd> to switch. The box by the clock flips '
- + '<strong>ENG</strong> &harr; <strong>ESP</strong>. Then run the test above.</li>'
+ + '<li>Scroll to <strong>Keyboards</strong> and click <strong>Add a keyboard</strong>.</li>'
+ + '<li>Pick <strong>' + esc(lay.addName) + '</strong>. It is ready immediately &mdash; no restart. '
+ + lay.addNote + '</li>'
+ + '<li>Press <kbd>Windows</kbd> + <kbd>Space</kbd> to switch, then run the test above.</li>'
  + '</ol>'
- + TASKBAR_SVG
- + '<p class="small" style="margin-top:12px">Microsoft&rsquo;s own instructions, if a screen looks different: '
- + '<a href="https://support.microsoft.com/en-us/windows/manage-the-input-and-display-language-settings-in-windows-12a10cb4-8626-9b77-0ccb-5013e0c7c7a2" '
+ + taskbarSvg(lay.indicator)
+ + (lay.id==="intl"
+    ? '<p class="small" style="margin-top:12px"><strong>Your teacher may ask you to go one step '
+    + 'further</strong> and <em>remove</em> the plain <strong>US (QWERTY)</strong> keyboard from that '
+    + 'same list, leaving only United States-International. That stops <kbd>Windows</kbd>+<kbd>Space</kbd> '
+    + 'from silently putting you back on a layout where the accents do not work.</p>' : '')
+ + '<p class="small" style="margin-top:12px">Microsoft&rsquo;s own instructions, if a screen looks '
+ + 'different: <a href="https://support.microsoft.com/en-us/windows/manage-the-input-and-display-language-settings-in-windows-12a10cb4-8626-9b77-0ccb-5013e0c7c7a2" '
  + 'target="_blank" rel="noopener">Manage language and keyboard settings in Windows</a>.</p>'
- + '<div class="whybox">'
- + '<p><strong>Why <em>Latin American</em> and not one of the others?</strong></p>'
- + '<p>It is the layout used across Spanish-speaking Latin America, and it is the one this class teaches, '
- + 'so the shortcut sheet, the board and your classmates\' screens all match. The <strong>Spain</strong> layout '
- + 'is a close cousin &mdash; \u00f1, the accent key, \u00bf and \u00a1 all work the same way, it puts the accent key '
- + 'in a slightly easier spot, and it keeps <kbd>@</kbd> on <kbd>Shift</kbd>+<kbd>2</kbd>. Everything you practice '
- + 'here transfers to it except where <kbd>@</kbd> lives.</p>'
- + '<p>The one to avoid is <strong>US&#8209;International</strong>. It turns the apostrophe and quote keys into '
- + 'accent keys, so typing <em>don&rsquo;t</em> or <em>&ldquo;hello&rdquo;</em> in an English essay starts throwing '
- + 'stray accents into your writing. Latin American leaves your English typing completely alone &mdash; you switch '
- + 'back with <kbd>Windows</kbd> + <kbd>Space</kbd> and everything behaves normally again.</p>'
- + '</div>'
- + LANGPACK_HTML
- + '</details>';
-
-var BADGES = [
-  {id:"first", n:"Primer paso",   d:"Finish any drill.",                     t:function(s){ return countBest(s)>=1; }},
-  {id:"enye",  n:"Mañoso",   d:"Type 100 ñ without a miss.",        t:function(s){ return (s.cleanChars["ñ"]||0)>=100; }},
-  {id:"acc",   n:"Acentuado",     d:"Type 250 accented vowels.",              t:function(s){ return accentTotal(s)>=250; }},
-  {id:"perf",  n:"Sin errores",   d:"Finish a drill at 100% accuracy.",       t:function(s){ return s.perfectDrills>=1; }},
-  {id:"w25",   n:"25 wpm",        d:"Hit 25 words per minute in a sprint.",   t:function(s){ return (s.sprintBest.wpm||0)>=25; }},
-  {id:"w40",   n:"40 wpm",        d:"Hit 40 words per minute in a sprint.",   t:function(s){ return (s.sprintBest.wpm||0)>=40; }},
-  {id:"c200",  n:"200 lpm",       d:"Hit 200 letters per minute in a sprint.",t:function(s){ return (s.sprintBest.cpm||0)>=200; }},
-  {id:"combo", n:"Racha de 50",   d:"Reach a 50-character clean streak.",     t:function(s){ return (s.bestStreak||0)>=50; }},
-  {id:"all",   n:"Todo el teclado",d:"Finish all seven drills.",              t:function(s){ return countBest(s)>=7; }},
-  {id:"k2000", n:"2.000 puntos",  d:"Score 2,000 points in one sprint.",      t:function(s){ return (s.sprintBest.points||0)>=2000; }}
-];
-function countBest(s){ var n=0; LEVELS.forEach(function(l){ if(s.best[l.id]) n++; }); return n; }
-function accentTotal(s){
-  var n=0, k="áéíóúü";
-  for(var i=0;i<k.length;i++) n += (s.cleanChars[k[i]]||0);
-  return n;
+ + extra
+ + '<details><summary>Do I need the Spanish language pack too?</summary>'
+ + '<p class="yesno"><b>No.</b> Adding the keyboard is all you need for this class, and it is the '
+ + 'safer choice. Nothing downloads and nothing about your laptop changes.</p>'
+ + '<p class="small" style="margin-top:10px">If you install the full Spanish language anyway, you also '
+ + 'get <strong>Spanish spellcheck</strong> — the one worth having, since without it a correctly '
+ + 'accented Spanish paragraph gets underlined in red as though every word were misspelled English — '
+ + 'plus Spanish dictation, read-aloud, and handwriting recognition on a Surface.</p>'
+ + '<div class="warnbox">Adding Spanish moves it to the top of your language list, and Windows uses '
+ + 'that order to decide what language <em>websites and Store apps</em> show you — so pages may '
+ + 'start appearing in Spanish. Changing the <strong>Windows display language</strong> is a separate '
+ + 'switch that turns every menu Spanish; leave it alone.</div>'
+ + '<p class="undo"><strong>To undo:</strong> Settings <span class="arrow">&rsaquo;</span> Time &amp; '
+ + 'language <span class="arrow">&rsaquo;</span> Language &amp; region, click the '
+ + '<strong>&hellip;</strong> next to Spanish and choose <strong>Remove</strong>.</p>'
+ + '<p class="small muted" style="margin-top:10px">Word and Outlook are separate — they do their '
+ + 'own Spanish spellcheck through the Editor language settings inside Office, whether or not Windows '
+ + 'has the language installed.</p>'
+ + '</details></details>';
 }
 
 /* ---------- 3. STATE ------------------------------------------------------ */
@@ -783,7 +1032,7 @@ var LS = "rjteclado_v1";
 var state = {
   name:"", best:{}, sprintBest:{}, weak:{}, cleanChars:{},
   totalMs:0, sessions:0, perfectDrills:0, bestStreak:0, custom:null,
-  firstUse:null, firstSprint:null, badges:{}
+  firstUse:null, firstSprint:null, badges:{}, layout:"intl"
 };
 function load(){
   try{ var raw=localStorage.getItem(LS);
@@ -792,6 +1041,7 @@ function load(){
   if(!state.sprintBest) state.sprintBest = {};
   if(!state.cleanChars) state.cleanChars = {};
   if(!state.badges) state.badges = {};
+  if(!LAYOUTS[state.layout]) state.layout = "intl";
 }
 function save(){ try{ localStorage.setItem(LS, JSON.stringify(state)); }catch(e){} }
 var saveTimer=null;
@@ -827,13 +1077,90 @@ function flashNote(msg){
   clearTimeout(el.__t); el.__t = setTimeout(function(){ el.style.display="none"; }, 2200);
 }
 function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
-function stripAccents(s){ return s.replace(/[áéíóúü]/g,function(c){
-  return {"á":"a","é":"e","í":"i","ó":"o","ú":"u","ü":"u"}[c]; }); }
+function stripAccents(s){ return s.replace(/[^\x00-\x7F]/g,function(c){ return STRIP[c] || c; }); }
 
 /* ---------- 4. KEYBOARD --------------------------------------------------- */
 var kbEl, keyEls = {};
+
+/* Switching layout rebuilds every route, every keycap and every prompt.
+   The drill text is untouched, so a student can change layout mid-practice
+   and carry on with the same words. */
+function setLayout(id){
+  if(!LAYOUTS[id]) id = "intl";
+  L = LAYOUTS[id];
+  ROWS = L.ROWS;
+  var built = buildHow(L);
+  HOW = built.how; DEADROUTE = built.deadRoute;
+  state.layout = id;
+  if(typeof save === "function") save();
+  if(kbEl){ keyEls = {}; renderKb(); }
+  paintLayout();
+  if(pr && pr.level) startLevel(pr.level.id);
+}
+
+function paintLayout(){
+  var el;
+  el = document.getElementById("subLine");
+  if(el) el.innerHTML = "Type Spanish on a US keyboard &mdash; Windows <strong>" + esc(L.full) + "</strong> layout";
+  el = document.getElementById("layNote");
+  if(el) el.textContent = L.blurb;
+  Array.prototype.forEach.call(document.querySelectorAll(".segbtn"), function(b){
+    var on = b.getAttribute("data-lay") === L.id;
+    b.className = "segbtn" + (on ? " on" : "");
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  el = document.getElementById("checkIntro");
+  if(el) el.innerHTML = "Your keys are printed in English, but Windows can send Spanish characters instead. "
+    + "Switch with <kbd>Windows</kbd> <span class=\"plus\">+</span> <kbd>Space</kbd> &mdash; "
+    + "the box by the clock should read <strong>" + esc(L.indicator) + "</strong>.";
+  el = document.getElementById("checkAsk");
+  if(el) el.innerHTML = "<strong>Test it:</strong> click the box and " + L.probe.ask + ".";
+  el = document.getElementById("turnOn");
+  if(el) el.innerHTML = "<strong>Switch between English and Spanish:</strong> <kbd>Windows</kbd> + <kbd>Space</kbd>. "
+    + "The indicator by the clock shows <strong>" + esc(L.indicator) + "</strong> for this layout.";
+  el = document.getElementById("cheatHead");
+  if(el) el.innerHTML = "Shortcut sheet &middot; " + esc(L.full);
+  el = document.getElementById("installHost1"); if(el) el.innerHTML = installHtml(L);
+  el = document.getElementById("installHost2"); if(el) el.innerHTML = installHtml(L);
+  el = document.getElementById("cheat");
+  if(el) el.innerHTML = CHEATS[L.id].map(function(r){
+    return "<tr><td style='font-size:1.05rem'>"+r[0]+"</td><td>"+r[1]+"</td><td class='muted tiny'>"+r[2]+"</td></tr>";
+  }).join("");
+  var probe = document.getElementById("probe"), verdict = document.getElementById("verdict");
+  if(probe){ probe.value = ""; }
+  if(verdict){ verdict.className = "verdict"; }
+}
+
+/* Drill text is shared between layouts; prompts and drill 6 are not. */
+function promptFor(lvl){
+  var p = lvl.prompt;
+  if(p && typeof p === "object") return p[L.id] || p.intl || "";
+  return p || "";
+}
+function linesFor(lvl){
+  var l = lvl.lines;
+  if(l && !(l instanceof Array)) return l[L.id] || l.intl || [];
+  return l || [];
+}
+function altGrHints(){
+  var need={}, seen={};
+  try{
+    LEVELS.forEach(function(l){
+      linesFor(l).forEach(function(line){
+        for(var i=0;i<line.length;i++){
+          var ch=line[i];
+          if(seen[ch]) continue;
+          seen[ch]=1;
+          var r=HOW[ch];
+          if(r && r.length===1 && r[0].alt) need[r[0].code]=ch;
+        }
+      });
+    });
+  }catch(e){}
+  return need;
+}
 function renderKb(){
-  var html="";
+  var html="", AG=altGrHints();
   ROWS.forEach(function(row){
     html += '<div class="krow">';
     row.forEach(function(k){
@@ -847,6 +1174,7 @@ function renderKb(){
       else {
         if(us) inner += '<span class="us">'+esc(us)+'</span>';
         if(shift && shift!==base.toUpperCase()) inner += '<span class="sh">'+esc(shift)+'</span>';
+        if(AG[code]) inner += '<span class="ag">'+esc(AG[code])+'</span>';
         inner += '<span class="main">'+esc(base)+'</span>';
       }
       html += '<div class="'+cls+'" data-code="'+code+'">'+inner+'</div>';
@@ -874,7 +1202,16 @@ function highlight(ch, stepIndex, after){
   clearKb();
   var howEl = document.getElementById("howto");
   var steps = HOW[ch];
-  if(!steps){ howEl.innerHTML=""; return; }
+  if(!steps){
+    /* Some characters genuinely have no keystroke on a layout (É and Ç on
+       AZERTY). Saying so beats a blank hint the student reads as a bug. */
+    var why = L.MISSING && L.MISSING[ch];
+    howEl.innerHTML = why
+      ? '<span class="tiny" style="color:var(--warn);font-weight:600">\u26a0 '+esc(ch)+' \u2014 '+esc(why)
+        +' See the shortcut sheet for the Alt code.</span>'
+      : "";
+    return;
+  }
   var step = steps[stepIndex] || steps[0];
   var el = keyEls[step.code];
   if(el){ el.className += " hot"; if(step.dead) el.className += " dead"; }
@@ -978,11 +1315,11 @@ function startLevel(id){
     lvl = {id:"custom", name:"Class list", tag:"From your teacher",
            prompt:"Your teacher's list. Same keys, your own vocabulary.", lines:state.custom.slice()};
   if(!lvl) return;
-  pr.level=lvl; pr.lines=lvl.lines.slice();
+  pr.level=lvl; pr.lines=linesFor(lvl).slice();
   if(lvl.accent){ shuffle(pr.lines); pr.lines=pr.lines.slice(0,12); }
   pr.idx=0; pr.started=0; pr.chars=0; pr.errs=0; pr.drillClean=true;
   document.getElementById("drillTitle").textContent = lvl.name.replace(/^\d+\s*·\s*/,"");
-  document.getElementById("drillPrompt").textContent = lvl.prompt;
+  document.getElementById("drillPrompt").innerHTML = promptFor(lvl);
   markActive(id);
   loadLine();
   document.getElementById("drillPanel").scrollIntoView({block:"nearest"});
@@ -1387,7 +1724,7 @@ function init(){
   var shared = listFromHash();
   if(shared){ state.custom = shared; save(); }
   kbEl = document.getElementById("kb");
-  renderKb();
+  setLayout(state.layout);
 
   pEng = makeEngine({
     el:document.getElementById("target"), cap:document.getElementById("capture"),
@@ -1441,11 +1778,10 @@ function init(){
   renderLevels(); renderProgress(); renderBadges(); renderMyCode();
   if(shared) flashNote("Loaded your teacher's list \u2014 " + shared.length
                        + " item" + (shared.length===1?"":"s"));
-  document.getElementById("installHost1").innerHTML = INSTALL_HTML;
-  document.getElementById("installHost2").innerHTML = INSTALL_HTML;
-  document.getElementById("cheat").innerHTML = CHEAT.map(function(r){
-    return "<tr><td style='font-size:1.05rem'>"+r[0]+"</td><td>"+r[1]+"</td><td class='muted tiny'>"+r[2]+"</td></tr>";
-  }).join("");
+  paintLayout();
+  Array.prototype.forEach.call(document.querySelectorAll(".segbtn"), function(b){
+    b.addEventListener("click", function(){ setLayout(b.getAttribute("data-lay")); });
+  });
 
   var nameIn = document.getElementById("student");
   nameIn.value = state.name || "";
@@ -1457,22 +1793,22 @@ function init(){
 
   var probe=document.getElementById("probe"), verdict=document.getElementById("verdict");
   probe.addEventListener("input", function(){
-    var v=probe.value;
+    var v = probe.value, p = L.probe;
     if(!v){ verdict.className="verdict"; return; }
-    if(v==="ñ"||v==="Ñ"){
-      verdict.className="verdict ok";
-      verdict.innerHTML="<strong>Spanish layout is on.</strong> That key gives ñ. Pick a drill below.";
-    } else if(v===";"||v===":"){
-      verdict.className="verdict no";
-      verdict.innerHTML="<strong>You are still on the English layout.</strong> That key gave “"+esc(v)
-        +"” instead of ñ.<br>Press <kbd>Windows</kbd> + <kbd>Space</kbd> until the box by the clock reads "
-        +"<strong>ESP</strong>, then try again."
-        +"<br><strong>No ESP in the list?</strong> Open the red box just below and follow the seven steps.";
+    if(v === p.want || v === p.want.toUpperCase()){
+      verdict.className = "verdict ok";
+      verdict.innerHTML = p.okMsg;
+    } else if(v === p.wrong){
+      verdict.className = "verdict no";
+      verdict.innerHTML = "<strong>Not on the " + esc(L.name) + " layout yet.</strong> " + p.wrongMsg
+        + "<br>Press <kbd>Windows</kbd> + <kbd>Space</kbd> to switch, then try again."
+        + "<br><strong>Layout not in the list?</strong> Open the box just below and follow the steps.";
       var d = document.querySelector("#installHost1 details"); if(d) d.open = true;
     } else {
-      verdict.className="verdict no";
-      verdict.innerHTML="That key gave “"+esc(v)+"”. Expected ñ. Check you pressed the key "
-        +"immediately right of <kbd>L</kbd>, and that the box by the clock reads <strong>ESP</strong>.";
+      verdict.className = "verdict no";
+      verdict.innerHTML = "That gave \u201c" + esc(v) + "\u201d. Expected \u201c" + esc(p.want)
+        + "\u201d. Check you pressed the right key, and that the box by the clock reads <strong>"
+        + esc(L.indicator) + "</strong>.";
     }
   });
   document.getElementById("probeAgain").addEventListener("click", function(){
@@ -1567,5 +1903,43 @@ document.addEventListener("DOMContentLoaded", init);
 
 <!-- Anonymous page-view count (GoatCounter): no cookies, no personal data, no form contents. -->
 <script data-goatcounter="https://rjedtech.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<!--RJTOOLS-->
+<section class="rj-tools" aria-label="More RJ Ed Tech tools">
+<style>
+.rj-tools{max-width:1000px;margin:52px auto 0;padding:30px 20px 44px;border-top:1px solid rgba(128,128,128,.28);font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;box-sizing:border-box;}
+.rj-tools *{box-sizing:border-box;}
+.rj-tools h2{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C11430;margin:0 0 16px;}
+.rj-tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:10px;}
+.rj-tool{display:block;padding:13px 15px;border:1px solid rgba(128,128,128,.28);border-radius:8px;text-decoration:none;color:inherit;background:rgba(128,128,128,.05);transition:border-color .15s,transform .15s;}
+.rj-tool:hover{border-color:#C11430;transform:translateY(-1px);}
+.rj-tool .rj-t{font-weight:650;font-size:.95rem;display:flex;align-items:center;gap:6px;color:inherit;line-height:1.25;}
+.rj-tool .rj-arrow{color:#C11430;transition:transform .15s;font-weight:700;}
+.rj-tool:hover .rj-arrow{transform:translateX(3px);}
+.rj-tool .rj-d{font-size:.8rem;line-height:1.42;margin-top:5px;opacity:.72;}
+.rj-tool.is-here{border-color:#C11430;background:rgba(193,20,48,.10);cursor:default;}
+.rj-tool.is-here:hover{transform:none;}
+.rj-here{margin-left:auto;font-size:.6rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#C11430;border:1px solid #C11430;border-radius:99px;padding:2px 8px;white-space:nowrap;}
+.rj-tools-foot{margin-top:18px;font-size:.72rem;opacity:.55;}
+</style>
+  <h2>More RJ Ed Tech tools</h2>
+  <div class="rj-tools-grid">
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Quiz-Builder/"><div class="rj-t">Raider Quiz Builder <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Build, expand, and convert Canvas quizzes from plain text.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Randomizer/"><div class="rj-t">Raider Randomizer <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Fair student picking, grouping, and seating shuffles.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Timer/"><div class="rj-t">Raider Timer <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Countdown, stopwatch, and station rotation for class.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Pods/"><div class="rj-t">Raider Pod Generator <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Mixed teams of four, seated so partners can actually help each other.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Roster-Hub/"><div class="rj-t">Raider Roster Hub <span class="rj-arrow">&rarr;</span></div><div class="rj-d">One class list for all your RJ tools, and ZipGrade without student names.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/MyRJScheduleCleaner/"><div class="rj-t">MyRJ Schedule Cleaner <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Import your MyRJ schedule into Outlook without looking busy all day.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/cooperative-learning-toolkit/"><div class="rj-t">Cooperative Learning Toolkit <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Every Kagan structure, method, and source in one place.</div></a>
+    <div class="rj-tool is-here"><div class="rj-t">Raider Teclado<span class="rj-here">You&rsquo;re here</span></div><div class="rj-d">Type Spanish accents, ñ, ¿ and ¡ on a US keyboard.</div></div>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Clavier/"><div class="rj-t">Raider Clavier <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Type French accents on a US keyboard, AZERTY or US-International.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Observation-Digest/"><div class="rj-t">Raider Observation Digest <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Your observation report, cut down to what was actually scored and written.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Raider-Observation-Console/"><div class="rj-t">Raider Observation Console <span class="rj-arrow">&rarr;</span></div><div class="rj-d">For chairs: the observation form showing only the elements you came to watch.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/EdTech-Status/"><div class="rj-t">EdTech Status <span class="rj-arrow">&rarr;</span></div><div class="rj-d">Live status of Regis Jesuit's ed-tech systems.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/Incoming-Raider-FAQ/"><div class="rj-t">Incoming Raider FAQ <span class="rj-arrow">&rarr;</span></div><div class="rj-d">A searchable guide for new and incoming Regis Jesuit students.</div></a>
+    <a class="rj-tool" href="https://rjedtech.github.io/New-Ignatian-Educator-FAQ/"><div class="rj-t">New Ignatian Educator FAQ <span class="rj-arrow">&rarr;</span></div><div class="rj-d">A searchable onboarding guide for teachers new to Ignatian education.</div></a>
+  </div>
+  <div class="rj-tools-foot">Regis Jesuit &middot; Educational Technology &mdash; free classroom tools that run in your browser</div>
+</section>
+<!--/RJTOOLS-->
 </body>
 </html>
